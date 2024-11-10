@@ -1,8 +1,12 @@
 package com.trafficlightsimulator.model;
 
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PedestrianCrossing {
+    private static final Logger logger = Logger.getLogger(PedestrianCrossing.class.getName());
+    
     private TrafficLightGroup pedestrianLightGroup;
     private Optional<PedestrianButton> buttonAtStart;
     private Optional<PedestrianButton> buttonAtEnd;
@@ -25,6 +29,7 @@ public class PedestrianCrossing {
     public void addPedestrianLight(TrafficLight light) {
         if (light != null && light.getType() == TrafficLight.Type.PEDESTRIAN) {
             pedestrianLightGroup.addTrafficLight(light);
+            logger.log(Level.INFO, "Added pedestrian light: {0}", light);
         }
     }
 
@@ -36,8 +41,14 @@ public class PedestrianCrossing {
 
     // Method to reset buttons after the crossing has been completed
     public void resetButtons() {
-        buttonAtStart.ifPresent(PedestrianButton::reset);
-        buttonAtEnd.ifPresent(PedestrianButton::reset);
+        buttonAtStart.ifPresent(button -> {
+            button.reset();
+            logger.log(Level.INFO, "Reset button at start of crossing.");
+        });
+        buttonAtEnd.ifPresent(button -> {
+            button.reset();
+            logger.log(Level.INFO, "Reset button at end of crossing.");
+        });
     }
 
     // Getter for the pedestrian light group
@@ -57,9 +68,11 @@ public class PedestrianCrossing {
 
     // Method to display the status of the pedestrian crossing (for debugging)
     public void displayCrossingStatus() {
-        System.out.println("Pedestrian Crossing Status:");
+        logger.log(Level.INFO, "Pedestrian Crossing Status:");
         pedestrianLightGroup.displayGroupStatus();
-        buttonAtStart.ifPresent(button -> System.out.println("Button at Start: " + (button.isPressed() ? "Pressed" : "Not Pressed")));
-        buttonAtEnd.ifPresent(button -> System.out.println("Button at End: " + (button.isPressed() ? "Pressed" : "Not Pressed")));
+        buttonAtStart.ifPresent(button -> 
+            logger.log(Level.INFO, "Button at Start: {0}", button.isPressed() ? "Pressed" : "Not Pressed"));
+        buttonAtEnd.ifPresent(button -> 
+            logger.log(Level.INFO, "Button at End: {0}", button.isPressed() ? "Pressed" : "Not Pressed"));
     }
 }
