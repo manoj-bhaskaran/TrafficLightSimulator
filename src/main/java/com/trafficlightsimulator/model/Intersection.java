@@ -2,8 +2,12 @@ package com.trafficlightsimulator.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Intersection {
+    private static final Logger logger = Logger.getLogger(Intersection.class.getName());
+    
     private List<Road> roads;
 
     // Constructor
@@ -15,6 +19,7 @@ public class Intersection {
     public void addRoad(Road road) {
         if (road != null) {
             roads.add(road);
+            logger.log(Level.INFO, "Added road to intersection: {0}", road);
         }
     }
 
@@ -49,8 +54,8 @@ public class Intersection {
         for (Road road : roads) {
             TrafficLightGroup lightGroup = road.getIncomingLanesTrafficLightGroup();
             if (lightGroup != null) {
-                // Set default state or perform any necessary initialization on the light group
                 lightGroup.setAllLightsState(State.OFF);  // Example default state
+                logger.log(Level.INFO, "Initialized traffic light group for road: {0}", road);
             }
         }
     }
@@ -60,21 +65,21 @@ public class Intersection {
         for (PedestrianCrossing crossing : getAllPedestrianCrossings()) {
             TrafficLightGroup pedestrianLightGroup = crossing.getPedestrianLightGroup();
             if (pedestrianLightGroup != null) {
-                // Set default state or perform any necessary initialization on the pedestrian light group
                 pedestrianLightGroup.setAllLightsState(State.OFF);  // Example default state
+                logger.log(Level.INFO, "Initialized pedestrian light group for crossing: {0}", crossing);
             }
         }
     }
 
     // Method to display the status of the intersection (for debugging purposes)
     public void displayIntersectionStatus() {
-        System.out.println("Intersection Status:");
+        logger.log(Level.INFO, "Intersection Status:");
         for (Road road : roads) {
-            System.out.println("Road:");
+            logger.log(Level.INFO, "Road:");
             road.displayLaneInfo();
 
             if (road.hasPedestrianCrossing()) {
-                System.out.println("Pedestrian Crossing:");
+                logger.log(Level.INFO, "Pedestrian Crossing:");
                 road.getPedestrianCrossing().displayCrossingStatus();
             }
         }
