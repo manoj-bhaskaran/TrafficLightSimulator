@@ -1,0 +1,14 @@
+# Ignore NetBeans specific files
+nbproject/
+build/
+dist/
+
+# Ignore compiled files
+*.class
+
+# Ignore Maven target directory
+target/
+
+# Ignore IDE-specific files
+*.iml
+.idea/
