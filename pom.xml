@@ -8,9 +8,9 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>22</maven.compiler.release>
+        <maven.compiler.release>17</maven.compiler.release> <!-- Using Java 17 as it is LTS and compatible -->
         <exec.mainClass>com.trafficlightsimulator.TrafficLightSimulator</exec.mainClass>
-        <javafx.version>22.0.2</javafx.version>
+        <javafx.version>17.0.2</javafx.version> <!-- Updated to JavaFX 17 for compatibility with Java 17 -->
         <sonar.organization>manoj-bhaskaran</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
@@ -33,7 +33,6 @@
             <version>${javafx.version}</version>
             <classifier>win</classifier>
         </dependency>
-        <!-- Add more JavaFX modules as needed -->
     </dependencies>
 
     <build>
