@@ -11,6 +11,8 @@
         <maven.compiler.release>23</maven.compiler.release>
         <exec.mainClass>com.trafficlightsimulator.TrafficLightSimulator</exec.mainClass>
         <javafx.version>23.0.1</javafx.version>
+        <sonar.organization>manoj-bhaskaran</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
     
     <dependencies>
