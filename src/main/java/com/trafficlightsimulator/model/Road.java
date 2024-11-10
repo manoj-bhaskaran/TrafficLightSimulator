@@ -11,12 +11,14 @@ public class Road {
     private List<Lane> incomingLanes;
     private List<Lane> outgoingLanes;
     private PedestrianCrossing pedestrianCrossing;
+    private TrafficLightGroup incomingLanesTrafficLightGroup;
 
     // Constructor
     public Road() {
         this.incomingLanes = new ArrayList<>();
         this.outgoingLanes = new ArrayList<>();
         this.pedestrianCrossing = null;
+        this.incomingLanesTrafficLightGroup = new TrafficLightGroup(); // Initialize the traffic light group
     }
 
     // Method to add an incoming lane
@@ -59,6 +61,18 @@ public class Road {
     // Method to check if the road has a pedestrian crossing
     public boolean hasPedestrianCrossing() {
         return pedestrianCrossing != null;
+    }
+    
+        // Method to add a traffic light to the group for incoming lanes
+    public void addTrafficLightToIncomingGroup(TrafficLight light) {
+        if (light != null) {
+            incomingLanesTrafficLightGroup.addTrafficLight(light);
+        }
+    }
+
+    // Getter for the traffic light group controlling incoming lanes
+    public TrafficLightGroup getIncomingLanesTrafficLightGroup() {
+        return incomingLanesTrafficLightGroup;
     }
 
     // Method to display lane information for traffic flow management (for debugging purposes)
