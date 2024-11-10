@@ -8,9 +8,9 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>23</maven.compiler.release>
+        <maven.compiler.release>22</maven.compiler.release>
         <exec.mainClass>com.trafficlightsimulator.TrafficLightSimulator</exec.mainClass>
-        <javafx.version>23.0.1</javafx.version>
+        <javafx.version>22.0.2</javafx.version>
         <sonar.organization>manoj-bhaskaran</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
