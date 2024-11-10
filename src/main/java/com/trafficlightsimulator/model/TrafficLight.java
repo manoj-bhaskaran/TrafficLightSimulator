@@ -2,6 +2,11 @@ package com.trafficlightsimulator.model;
 
 // TrafficLight class
 public class TrafficLight {
+    
+     public enum Type {
+        TRAFFIC,
+        PEDESTRIAN
+    }
     private Color color;
     private State state;
     private final Type type;
