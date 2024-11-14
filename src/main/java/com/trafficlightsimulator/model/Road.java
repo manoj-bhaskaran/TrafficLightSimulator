@@ -12,15 +12,19 @@ public class Road {
     private List<Lane> outgoingLanes;
     private PedestrianCrossing pedestrianCrossing;
     private TrafficLightGroup incomingLanesTrafficLightGroup;
-    private double angle;  // New attribute for road angle
+    private double angle;  // Attribute for road angle
+    private int numIncomingLanes; // New attribute for tracking number of incoming lanes
+    private int numOutgoingLanes; // New attribute for tracking number of outgoing lanes
 
-    // Constructor with angle
-    public Road(double angle) {
+    // Constructor with angle and lane counts
+    public Road(double angle, int numIncomingLanes, int numOutgoingLanes) {
         this.incomingLanes = new ArrayList<>();
         this.outgoingLanes = new ArrayList<>();
         this.pedestrianCrossing = null;
         this.incomingLanesTrafficLightGroup = new TrafficLightGroup();
         setAngle(angle); // Set and validate the angle
+        setNumIncomingLanes(numIncomingLanes); // Initialize incoming lanes
+        setNumOutgoingLanes(numOutgoingLanes); // Initialize outgoing lanes
     }
 
     // Method to set the angle with validation
@@ -37,20 +41,46 @@ public class Road {
         return angle;
     }
 
-    // Method to add an incoming lane
-    public void addIncomingLane(Lane lane) {
-        if (lane != null) {
-            incomingLanes.add(lane);
-            logger.log(Level.INFO, "Added incoming lane: {0}", lane);
+    // Setter for number of incoming lanes
+    public void setNumIncomingLanes(int numIncomingLanes) {
+        this.numIncomingLanes = numIncomingLanes;
+        this.incomingLanes.clear();
+        for (int i = 0; i < numIncomingLanes; i++) {
+            this.incomingLanes.add(new Lane(Lane.Direction.INCOMING));
+        }
+        logger.log(Level.INFO, "Number of incoming lanes set to: {0}", numIncomingLanes);
+    }
+
+    // Getter for number of incoming lanes
+    public int getNumIncomingLanes() {
+        return numIncomingLanes;
+    }
+
+    // Setter for number of outgoing lanes
+    public void setNumOutgoingLanes(int numOutgoingLanes) {
+        this.numOutgoingLanes = numOutgoingLanes;
+        this.outgoingLanes.clear();
+        for (int i = 0; i < numOutgoingLanes; i++) {
+            this.outgoingLanes.add(new Lane(Lane.Direction.OUTGOING));
+        }
+        logger.log(Level.INFO, "Number of outgoing lanes set to: {0}", numOutgoingLanes);
+    }
+
+    // Getter for number of outgoing lanes
+    public int getNumOutgoingLanes() {
+        return numOutgoingLanes;
+    }
+
+    // Method to add a traffic light to the group for incoming lanes
+    public void addTrafficLightToIncomingGroup(TrafficLight light) {
+        if (light != null) {
+            incomingLanesTrafficLightGroup.addTrafficLight(light);
         }
     }
 
-    // Method to add an outgoing lane
-    public void addOutgoingLane(Lane lane) {
-        if (lane != null) {
-            outgoingLanes.add(lane);
-            logger.log(Level.INFO, "Added outgoing lane: {0}", lane);
-        }
+    // Getter for the traffic light group controlling incoming lanes
+    public TrafficLightGroup getIncomingLanesTrafficLightGroup() {
+        return incomingLanesTrafficLightGroup;
     }
 
     // Method to associate a pedestrian crossing with the road
@@ -77,18 +107,6 @@ public class Road {
     // Method to check if the road has a pedestrian crossing
     public boolean hasPedestrianCrossing() {
         return pedestrianCrossing != null;
-    }
-
-    // Method to add a traffic light to the group for incoming lanes
-    public void addTrafficLightToIncomingGroup(TrafficLight light) {
-        if (light != null) {
-            incomingLanesTrafficLightGroup.addTrafficLight(light);
-        }
-    }
-
-    // Getter for the traffic light group controlling incoming lanes
-    public TrafficLightGroup getIncomingLanesTrafficLightGroup() {
-        return incomingLanesTrafficLightGroup;
     }
 
     // Method to display lane information for traffic flow management (for debugging purposes)
