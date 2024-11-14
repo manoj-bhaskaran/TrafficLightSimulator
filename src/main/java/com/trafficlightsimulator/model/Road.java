@@ -12,13 +12,29 @@ public class Road {
     private List<Lane> outgoingLanes;
     private PedestrianCrossing pedestrianCrossing;
     private TrafficLightGroup incomingLanesTrafficLightGroup;
+    private double angle;  // New attribute for road angle
 
-    // Constructor
-    public Road() {
+    // Constructor with angle
+    public Road(double angle) {
         this.incomingLanes = new ArrayList<>();
         this.outgoingLanes = new ArrayList<>();
         this.pedestrianCrossing = null;
-        this.incomingLanesTrafficLightGroup = new TrafficLightGroup(); // Initialize the traffic light group
+        this.incomingLanesTrafficLightGroup = new TrafficLightGroup();
+        setAngle(angle); // Set and validate the angle
+    }
+
+    // Method to set the angle with validation
+    public void setAngle(double angle) {
+        if (angle < 0 || angle >= 360) {
+            throw new IllegalArgumentException("Angle must be between 0 and 360 degrees.");
+        }
+        this.angle = angle;
+        logger.log(Level.INFO, "Angle for road set to: {0} degrees", angle);
+    }
+
+    // Getter for angle
+    public double getAngle() {
+        return angle;
     }
 
     // Method to add an incoming lane
@@ -62,8 +78,8 @@ public class Road {
     public boolean hasPedestrianCrossing() {
         return pedestrianCrossing != null;
     }
-    
-        // Method to add a traffic light to the group for incoming lanes
+
+    // Method to add a traffic light to the group for incoming lanes
     public void addTrafficLightToIncomingGroup(TrafficLight light) {
         if (light != null) {
             incomingLanesTrafficLightGroup.addTrafficLight(light);
