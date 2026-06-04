@@ -29,6 +29,13 @@ the current `0.x` baseline.
 
 ### Changed
 
+- Incremented the pre-MVP development version from `0.1.1-SNAPSHOT` to
+  `0.1.2-SNAPSHOT` for the platform-portable dependency fix.
+- Removed unused JavaFX dependencies, including the Windows-only
+  `javafx-graphics` classifier, so Maven verification resolves dependencies
+  portably on Linux, macOS, and Windows.
+- Updated the README to describe the current Java-only runtime dependency
+  baseline and the deferred JavaFX GUI dependency policy.
 - Incremented the pre-MVP development version from `0.1.0-SNAPSHOT` to
   `0.1.1-SNAPSHOT` for the runnable packaging fix.
 - Updated Maven coordinates from the placeholder `com:TrafficLightSimulator` at
