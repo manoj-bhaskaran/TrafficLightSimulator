@@ -19,6 +19,8 @@ the current `0.x` baseline.
 - Documented the pre-MVP SemVer versioning policy in the README.
 - Documented that SonarQube Cloud analysis requires `SONAR_TOKEN` and an explicit
   `sonarcloud` Maven profile opt-in.
+- Documented how to troubleshoot Maven Central `403 Forbidden` errors while
+  resolving Maven lifecycle plugins.
 
 ### Changed
 
@@ -30,6 +32,7 @@ the current `0.x` baseline.
 - Configured SonarQube analysis to be skipped by default and enabled only through
   the `sonarcloud` Maven profile, avoiding unauthenticated scanner failures in
   pull-request builds.
+- Pinned the Maven resources plugin version used by the verification lifecycle.
 
 ## [0.1.0] - 2026-06-04
 

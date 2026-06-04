@@ -34,6 +34,33 @@ Run the Maven verification lifecycle from the repository root:
 mvn -B verify
 ```
 
+### Resolving Maven Central 403 errors
+
+If `mvn -B verify` fails while downloading `maven-resources-plugin:3.3.1` with
+`403 Forbidden`, Maven reached the repository but the network, proxy, or mirror
+rejected the request. This repository pins `maven-resources-plugin` to `3.3.1`
+through `maven.resources.plugin.version`, so the failure is environmental rather
+than a missing project version declaration.
+
+To resolve it:
+
+1. Confirm the network can reach Maven Central:
+
+   ```sh
+   curl -I https://repo.maven.apache.org/maven2/
+   ```
+
+2. If you are behind a corporate proxy, configure Maven proxy settings in
+   `~/.m2/settings.xml` or use the approved internal Maven mirror/artifact
+   repository.
+3. If a proxy or mirror outage produced a cached failed download marker, clear the
+   relevant `*.lastUpdated` files from `~/.m2/repository` or rerun Maven with
+   forced updates:
+
+   ```sh
+   mvn -U -B verify
+   ```
+
 ## Static analysis
 
 The Maven build pins the SonarQube Cloud scanner plugin version through the
