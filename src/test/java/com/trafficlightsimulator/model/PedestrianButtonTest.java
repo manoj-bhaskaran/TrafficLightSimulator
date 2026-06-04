@@ -16,6 +16,11 @@ class PedestrianButtonTest {
     }
 
     @Test
+    void constructor_rejectsNullLightGroup() {
+        assertThrows(IllegalArgumentException.class, () -> new PedestrianButton(null));
+    }
+
+    @Test
     void press_setsPressedStateAndIsIdempotent() {
         PedestrianButton button = new PedestrianButton(new TrafficLightGroup());
 

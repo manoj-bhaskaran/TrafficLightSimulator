@@ -7,7 +7,7 @@ simulation domain objects.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.5.0-SNAPSHOT`
+- **Current development version:** `0.7.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -63,7 +63,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.5.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.7.0-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors
@@ -107,6 +107,16 @@ For lights controlled by different road or pedestrian groups in an
 `Intersection`, call `configureIncompatibleTrafficLights`. The intersection
 locates the owning groups and registers the incompatibility in each affected
 group, so either group prevents simultaneous conflicting green signals.
+
+## Pedestrian crossing model
+
+`PedestrianCrossing` owns the pedestrian `TrafficLightGroup` for that crossing.
+When a crossing is constructed with start and/or end `PedestrianButton` instances,
+the crossing connects those buttons to its owned light group, so a pressed button
+has a defined path back to the lights controlled by that crossing. The button
+getters remain useful for inspecting the linked light group, while
+`PedestrianCrossing.getButtonAtStart()` and `getButtonAtEnd()` return `Optional`
+views for callers that need to handle crossings without buttons.
 
 ## Dependency notes
 
