@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com</groupId>
+    <groupId>com.trafficlightsimulator</groupId>
     <artifactId>TrafficLightSimulator</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     
     <properties>
@@ -11,6 +11,9 @@
         <maven.compiler.release>17</maven.compiler.release> <!-- Using Java 17 as it is LTS and compatible -->
         <exec.mainClass>com.trafficlightsimulator.TrafficLightSimulator</exec.mainClass>
         <javafx.version>17.0.2</javafx.version> <!-- Updated to JavaFX 17 for compatibility with Java 17 -->
+        <maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
+        <sonar.maven.plugin.version>5.7.0.6970</sonar.maven.plugin.version>
+        <sonar.skip>true</sonar.skip>
         <sonar.organization>manoj-bhaskaran</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
@@ -35,8 +38,34 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>sonarcloud</id>
+            <properties>
+                <sonar.skip>false</sonar.skip>
+            </properties>
+        </profile>
+    </profiles>
+
     <build>
+        <pluginManagement>
+            <plugins>
+                <!-- Maven lifecycle plugin versions -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>${maven.resources.plugin.version}</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
         <plugins>
+            <!-- SonarQube Cloud scanner plugin -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar.maven.plugin.version}</version>
+            </plugin>
             <!-- Compiler plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
