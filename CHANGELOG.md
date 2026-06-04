@@ -14,6 +14,31 @@ the current `0.x` baseline.
 
 ### Added
 
+- Added JUnit Jupiter 5.11 as a test-scoped dependency and configured
+  `maven-surefire-plugin` 3.3.1 to run JUnit 5 tests.
+- Added `TrafficLightTest` covering `setColor` for all combinations of
+  `Type` (TRAFFIC/PEDESTRIAN) and `isMultiColor` (true/false), including
+  the null-guard and AMBER rejection for pedestrian lights.
+
+### Fixed
+
+- `TrafficLight.setColor` previously blocked every call on non-multi-colour
+  lights regardless of whether the requested colour was valid. The guard has
+  been redesigned: PEDESTRIAN lights reject AMBER; all other valid colours are
+  accepted for both single- and multi-colour lights; a null argument now throws
+  `IllegalArgumentException` with a clear message.
+
+### Changed
+
+- Deleted the top-level `Type.java` enum (`TRAFFIC`, `PEDESTRIAN`), which was
+  dead code. The canonical definition is the nested `TrafficLight.Type` enum,
+  which is already used throughout the codebase (`TrafficLight`,
+  `PedestrianCrossing`).
+- Incremented the pre-MVP development version from `0.1.2-SNAPSHOT` to
+  `0.2.0-SNAPSHOT`. Deletion of the public top-level `Type` class is a
+  breaking API change; per the project versioning policy, breaking changes
+  require a minor-version increment in the `0.x` range.
+
 - Added a runnable application entry point that bootstraps and logs a sample
   traffic-light intersection.
 - Added executable jar manifest configuration so packaged artifacts can be run
