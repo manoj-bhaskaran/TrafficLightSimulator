@@ -14,6 +14,10 @@ the current `0.x` baseline.
 
 ### Added
 
+- Added layered source packages for application entry-point, simulation engine,
+  configuration constants, model data, and future UI concerns.
+- Added `TrafficLightSimulationEngine` tests covering engine construction and
+  traffic-light group initialization.
 - Added encapsulation regression tests proving model collection getters expose
   read-only views and external mutation attempts throw `UnsupportedOperationException`.
 - Added pedestrian button/crossing linkage tests showing that buttons attached to a
@@ -50,6 +54,12 @@ the current `0.x` baseline.
 
 ### Changed
 
+- Incremented the pre-MVP development version from `0.8.0-SNAPSHOT` to
+  `0.9.0-SNAPSHOT` for the source package layering restructure.
+- Moved the runnable entry point to `com.trafficlightsimulator.app` and updated
+  the Maven `exec.mainClass`/jar manifest target.
+- Moved intersection and road validation limits into the `config` layer while
+  keeping model behavior unchanged.
 - Incremented the pre-MVP development version from `0.7.0-SNAPSHOT` to
   `0.8.0-SNAPSHOT` for the model collection getter encapsulation hardening.
 - Changed model collection getters for intersections, roads, traffic-light groups,

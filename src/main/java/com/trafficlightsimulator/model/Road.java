@@ -1,5 +1,7 @@
 package com.trafficlightsimulator.model;
 
+import com.trafficlightsimulator.config.RoadLimits;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +32,7 @@ public class Road {
 
     // Method to set the angle with validation
     public void setAngle(double angle) {
-        if (angle < 0 || angle >= 360) {
+        if (angle < RoadLimits.MIN_ANGLE_DEGREES || angle >= RoadLimits.MAX_ANGLE_DEGREES_EXCLUSIVE) {
             throw new IllegalArgumentException("Angle must be between 0 and 360 degrees.");
         }
         this.angle = angle;
@@ -44,7 +46,7 @@ public class Road {
 
     // Setter for number of incoming lanes
     public void setNumIncomingLanes(int numIncomingLanes) {
-        if (numIncomingLanes < 1) {
+        if (numIncomingLanes < RoadLimits.MIN_LANES) {
             throw new IllegalArgumentException("Number of incoming lanes must be at least 1.");
         }
         int current = this.incomingLanes.size();
@@ -66,7 +68,7 @@ public class Road {
 
     // Setter for number of outgoing lanes
     public void setNumOutgoingLanes(int numOutgoingLanes) {
-        if (numOutgoingLanes < 1) {
+        if (numOutgoingLanes < RoadLimits.MIN_LANES) {
             throw new IllegalArgumentException("Number of outgoing lanes must be at least 1.");
         }
         int current = this.outgoingLanes.size();
