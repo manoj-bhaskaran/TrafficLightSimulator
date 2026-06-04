@@ -7,7 +7,7 @@ simulation domain objects.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.1.0-SNAPSHOT`
+- **Current development version:** `0.1.1-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -32,6 +32,21 @@ Run the Maven verification lifecycle from the repository root:
 
 ```sh
 mvn -B verify
+```
+
+## Running the application
+
+Run the simulator entry point directly with Maven:
+
+```sh
+mvn exec:java
+```
+
+Build the executable jar package, then launch it with `java -jar`:
+
+```sh
+mvn -B package
+java -jar target/TrafficLightSimulator-0.1.1-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors
