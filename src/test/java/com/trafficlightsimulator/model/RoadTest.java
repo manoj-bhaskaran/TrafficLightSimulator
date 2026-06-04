@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class RoadTest {
@@ -61,5 +62,73 @@ class RoadTest {
         });
 
         assertEquals(270.0, road.getAngle());
+    }
+
+    @Test
+    void constructor_rejectsZeroIncomingLaneCount() {
+        assertThrows(IllegalArgumentException.class, () -> new Road(0.0, 0, 1));
+    }
+
+    @Test
+    void constructor_rejectsNegativeIncomingLaneCount() {
+        assertThrows(IllegalArgumentException.class, () -> new Road(0.0, -1, 1));
+    }
+
+    @Test
+    void constructor_rejectsZeroOutgoingLaneCount() {
+        assertThrows(IllegalArgumentException.class, () -> new Road(0.0, 1, 0));
+    }
+
+    @Test
+    void constructor_rejectsNegativeOutgoingLaneCount() {
+        assertThrows(IllegalArgumentException.class, () -> new Road(0.0, 1, -1));
+    }
+
+    @Test
+    void setNumIncomingLanes_growthPreservesExistingLaneObjects() {
+        Road road = new Road(0.0, 2, 1);
+        Lane originalFirst = road.getIncomingLanes().get(0);
+        Lane originalSecond = road.getIncomingLanes().get(1);
+
+        road.setNumIncomingLanes(4);
+
+        assertSame(originalFirst, road.getIncomingLanes().get(0));
+        assertSame(originalSecond, road.getIncomingLanes().get(1));
+        assertEquals(4, road.getIncomingLanes().size());
+    }
+
+    @Test
+    void setNumIncomingLanes_shrinkRemovesFromTailAndPreservesHead() {
+        Road road = new Road(0.0, 3, 1);
+        Lane originalFirst = road.getIncomingLanes().get(0);
+
+        road.setNumIncomingLanes(1);
+
+        assertEquals(1, road.getIncomingLanes().size());
+        assertSame(originalFirst, road.getIncomingLanes().get(0));
+    }
+
+    @Test
+    void setNumOutgoingLanes_growthPreservesExistingLaneObjects() {
+        Road road = new Road(0.0, 1, 2);
+        Lane originalFirst = road.getOutgoingLanes().get(0);
+        Lane originalSecond = road.getOutgoingLanes().get(1);
+
+        road.setNumOutgoingLanes(4);
+
+        assertSame(originalFirst, road.getOutgoingLanes().get(0));
+        assertSame(originalSecond, road.getOutgoingLanes().get(1));
+        assertEquals(4, road.getOutgoingLanes().size());
+    }
+
+    @Test
+    void setNumOutgoingLanes_shrinkRemovesFromTailAndPreservesHead() {
+        Road road = new Road(0.0, 1, 3);
+        Lane originalFirst = road.getOutgoingLanes().get(0);
+
+        road.setNumOutgoingLanes(1);
+
+        assertEquals(1, road.getOutgoingLanes().size());
+        assertSame(originalFirst, road.getOutgoingLanes().get(0));
     }
 }
