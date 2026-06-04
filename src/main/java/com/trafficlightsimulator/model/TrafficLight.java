@@ -28,11 +28,13 @@ public class TrafficLight {
     }
 
     public void setColor(Color color) {
-        if (isMultiColor && (type == Type.TRAFFIC || (type == Type.PEDESTRIAN && (color == Color.RED || color == Color.GREEN)))) {
-            this.color = color;
-        } else {
-            throw new IllegalArgumentException("This traffic light cannot change to the specified color.");
+        if (color == null) {
+            throw new IllegalArgumentException("Color must not be null.");
         }
+        if (type == Type.PEDESTRIAN && color == Color.AMBER) {
+            throw new IllegalArgumentException("Pedestrian lights do not support AMBER.");
+        }
+        this.color = color;
     }
 
     public State getState() {
