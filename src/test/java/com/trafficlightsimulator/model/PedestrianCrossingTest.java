@@ -113,4 +113,86 @@ class PedestrianCrossingTest {
         assertEquals(1, crossing.getPedestrianLightGroup().getLights().size());
         assertSame(pedestrianLight, crossing.getPedestrianLightGroup().getLights().get(0));
     }
+
+    @Test
+    void noButtonConstructor_isAutomatedControlType() {
+        PedestrianCrossing crossing = new PedestrianCrossing();
+
+        assertEquals(PedestrianCrossing.ControlType.AUTOMATED, crossing.getControlType());
+    }
+
+    @Test
+    void buttonConstructor_withAtLeastOneButton_isButtonControlledType() {
+        PedestrianButton startButton = new PedestrianButton(new TrafficLightGroup());
+        PedestrianCrossing crossing = new PedestrianCrossing(startButton, null);
+
+        assertEquals(PedestrianCrossing.ControlType.BUTTON_CONTROLLED, crossing.getControlType());
+    }
+
+    @Test
+    void buttonConstructor_withBothNullButtons_isAutomatedControlType() {
+        PedestrianCrossing crossing = new PedestrianCrossing(null, null);
+
+        assertEquals(PedestrianCrossing.ControlType.AUTOMATED, crossing.getControlType());
+    }
+
+    @Test
+    void isActive_returnsFalseWhenNoLightsAdded() {
+        PedestrianCrossing crossing = new PedestrianCrossing();
+
+        assertFalse(crossing.isActive());
+    }
+
+    @Test
+    void isActive_returnsFalseWhenLightIsRedAndOn() {
+        PedestrianCrossing crossing = new PedestrianCrossing();
+        crossing.addPedestrianLight(new TrafficLight(Color.RED, State.ON,
+                TrafficLight.Type.PEDESTRIAN, Direction.NONE, false));
+
+        assertFalse(crossing.isActive());
+    }
+
+    @Test
+    void activate_setsAllPedestrianLightsToGreenOn() {
+        PedestrianCrossing crossing = new PedestrianCrossing();
+        TrafficLight light = new TrafficLight(Color.RED, State.ON,
+                TrafficLight.Type.PEDESTRIAN, Direction.NONE, false);
+        crossing.addPedestrianLight(light);
+
+        crossing.activate();
+
+        assertTrue(crossing.isActive());
+        assertEquals(Color.GREEN, light.getColor());
+        assertEquals(State.ON, light.getState());
+    }
+
+    @Test
+    void deactivate_setsAllPedestrianLightsToRedOn() {
+        PedestrianCrossing crossing = new PedestrianCrossing();
+        TrafficLight light = new TrafficLight(Color.RED, State.ON,
+                TrafficLight.Type.PEDESTRIAN, Direction.NONE, false);
+        crossing.addPedestrianLight(light);
+        crossing.activate();
+
+        crossing.deactivate();
+
+        assertFalse(crossing.isActive());
+        assertEquals(Color.RED, light.getColor());
+        assertEquals(State.ON, light.getState());
+    }
+
+    @Test
+    void activateAndDeactivate_toggleStatusCorrectly() {
+        PedestrianCrossing crossing = new PedestrianCrossing();
+        crossing.addPedestrianLight(new TrafficLight(Color.RED, State.ON,
+                TrafficLight.Type.PEDESTRIAN, Direction.NONE, false));
+
+        assertFalse(crossing.isActive());
+
+        crossing.activate();
+        assertTrue(crossing.isActive());
+
+        crossing.deactivate();
+        assertFalse(crossing.isActive());
+    }
 }

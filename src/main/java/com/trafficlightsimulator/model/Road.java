@@ -106,6 +106,27 @@ public class Road {
         logger.log(Level.INFO, "Pedestrian crossing set for the road: {0}", pedestrianCrossing);
     }
 
+    // Adds a pedestrian crossing to the road; throws if one is already present
+    public void addPedestrianCrossing(PedestrianCrossing pedestrianCrossing) {
+        if (pedestrianCrossing == null) {
+            throw new IllegalArgumentException("Pedestrian crossing cannot be null.");
+        }
+        if (this.pedestrianCrossing != null) {
+            throw new IllegalStateException("A pedestrian crossing is already associated with this road.");
+        }
+        this.pedestrianCrossing = pedestrianCrossing;
+        logger.log(Level.INFO, "Pedestrian crossing added to road: {0}", pedestrianCrossing);
+    }
+
+    // Removes the pedestrian crossing from the road; throws if none is present
+    public void removePedestrianCrossing() {
+        if (this.pedestrianCrossing == null) {
+            throw new IllegalStateException("No pedestrian crossing is associated with this road.");
+        }
+        logger.log(Level.INFO, "Pedestrian crossing removed from road: {0}", this.pedestrianCrossing);
+        this.pedestrianCrossing = null;
+    }
+
     // Getter for incoming lanes
     public List<Lane> getIncomingLanes() {
         return Collections.unmodifiableList(incomingLanes);
