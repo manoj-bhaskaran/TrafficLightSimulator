@@ -34,6 +34,17 @@ Run the Maven verification lifecycle from the repository root:
 mvn -B verify
 ```
 
+## Static analysis
+
+The Maven build pins the SonarQube Cloud scanner plugin version through the
+`sonar.maven.plugin.version` property so CI does not use an implicit, changing
+scanner version. To run SonarQube analysis locally or in CI, provide a valid
+SonarQube Cloud token before invoking the scanner:
+
+```sh
+SONAR_TOKEN=<token> mvn -B sonar:sonar
+```
+
 ## License
 
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for the

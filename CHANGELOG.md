@@ -17,12 +17,15 @@ the current `0.x` baseline.
 - Established a Keep a Changelog file with an `Unreleased` section.
 - Added MIT licensing documentation for the repository.
 - Documented the pre-MVP SemVer versioning policy in the README.
+- Documented how to run SonarQube Cloud analysis with an explicit token.
 
 ### Changed
 
 - Updated Maven coordinates from the placeholder `com:TrafficLightSimulator` at
   `1.0-SNAPSHOT` to `com.trafficlightsimulator:TrafficLightSimulator` at the
   pre-MVP development baseline `0.1.0-SNAPSHOT`.
+- Pinned the SonarQube Cloud Maven scanner plugin version to avoid implicit
+  scanner version changes during analysis.
 
 ## [0.1.0] - 2026-06-04
 
