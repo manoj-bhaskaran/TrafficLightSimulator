@@ -1,6 +1,7 @@
 package com.trafficlightsimulator.model;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,8 +43,9 @@ class IntersectionTest {
         intersection.addRoad(new Road(90.0, 1, 1));
         Road extraRoad = new Road(180.0, 1, 1);
 
-        IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> intersection.addRoad(extraRoad));
+        Executable addExtraRoad = () -> intersection.addRoad(extraRoad);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, addExtraRoad);
 
         assertTrue(exception.getMessage().contains("Cannot add more roads"));
         assertEquals(2, intersection.getRoads().size());
@@ -65,8 +67,9 @@ class IntersectionTest {
 
         TrafficLightGroup eastLightGroup = eastRoad.getIncomingLanesTrafficLightGroup();
 
-        assertThrows(IllegalStateException.class,
-                () -> eastLightGroup.setLightColor(eastLight, Color.GREEN));
+        Executable activateEastLight = () -> eastLightGroup.setLightColor(eastLight, Color.GREEN);
+
+        assertThrows(IllegalStateException.class, activateEastLight);
         assertEquals(Color.RED, eastLight.getColor());
     }
 
