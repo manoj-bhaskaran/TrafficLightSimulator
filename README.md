@@ -2,7 +2,7 @@
 
 Traffic Light Simulator is a Java 17 project for modeling traffic light
 simulation domain objects with a layered package structure for model, engine,
-configuration, and future UI concerns.
+and configuration concerns.
 
 ## Project metadata
 
@@ -107,10 +107,9 @@ The Java source is organized into layered packages under
   group initialization and diagnostic display orchestration.
 - `config` contains validation limits and is the home for future builders and
   factories.
-- `ui` is reserved for future JavaFX presentation code.
 
-This keeps domain data, simulation behavior, configuration policy, and
-presentation code from growing into a single package as the simulator expands.
+This keeps domain data, simulation behavior, and configuration policy from
+growing into a single package as the simulator expands.
 
 ## Model collection encapsulation
 

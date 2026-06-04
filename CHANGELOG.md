@@ -15,7 +15,7 @@ the current `0.x` baseline.
 ### Added
 
 - Added layered source packages for application entry-point, simulation engine,
-  configuration constants, model data, and future UI concerns.
+  configuration constants, and model data.
 - Added `TrafficLightSimulationEngine` tests covering engine construction and
   traffic-light group initialization.
 - Added encapsulation regression tests proving model collection getters expose
