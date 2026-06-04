@@ -1,0 +1,40 @@
+# Traffic Light Simulator
+
+Traffic Light Simulator is a Java 17 / JavaFX project for modeling traffic light
+simulation domain objects.
+
+## Project metadata
+
+- **Maven group ID:** `com.trafficlightsimulator`
+- **Maven artifact ID:** `TrafficLightSimulator`
+- **Current development version:** `0.1.0-SNAPSHOT`
+- **Java baseline:** Java 17
+
+## Versioning policy
+
+This repository follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+Because the project is still pre-MVP, versions remain in the `0.x.y` range until
+a stable `1.0.0` release is ready.
+
+During the pre-MVP phase:
+
+- `0.MINOR.0` releases may introduce breaking changes as the design evolves.
+- `0.x.PATCH` releases are reserved for backward-compatible fixes within the
+  current pre-MVP baseline.
+- Development builds keep the `-SNAPSHOT` qualifier in `pom.xml`.
+
+Notable changes are tracked in [CHANGELOG.md](CHANGELOG.md), using the Keep a
+Changelog format.
+
+## Building and verifying
+
+Run the Maven verification lifecycle from the repository root:
+
+```sh
+mvn -B verify
+```
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE) for the
+full license text.
