@@ -14,6 +14,11 @@ the current `0.x` baseline.
 
 ### Added
 
+- Added a runnable application entry point that bootstraps and logs a sample
+  traffic-light intersection.
+- Added executable jar manifest configuration so packaged artifacts can be run
+  with `java -jar`.
+- Documented Maven and packaged-jar application run commands in the README.
 - Established a Keep a Changelog file with an `Unreleased` section.
 - Added MIT licensing documentation for the repository.
 - Documented the pre-MVP SemVer versioning policy in the README.
@@ -24,6 +29,8 @@ the current `0.x` baseline.
 
 ### Changed
 
+- Incremented the pre-MVP development version from `0.1.0-SNAPSHOT` to
+  `0.1.1-SNAPSHOT` for the runnable packaging fix.
 - Updated Maven coordinates from the placeholder `com:TrafficLightSimulator` at
   `1.0-SNAPSHOT` to `com.trafficlightsimulator:TrafficLightSimulator` at the
   pre-MVP development baseline `0.1.0-SNAPSHOT`.
