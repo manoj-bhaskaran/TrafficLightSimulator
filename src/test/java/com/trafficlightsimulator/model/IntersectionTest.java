@@ -40,9 +40,10 @@ class IntersectionTest {
         Intersection intersection = new Intersection(2);
         intersection.addRoad(new Road(0.0, 1, 1));
         intersection.addRoad(new Road(90.0, 1, 1));
+        Road extraRoad = new Road(180.0, 1, 1);
 
         IllegalStateException exception = assertThrows(IllegalStateException.class,
-                () -> intersection.addRoad(new Road(180.0, 1, 1)));
+                () -> intersection.addRoad(extraRoad));
 
         assertTrue(exception.getMessage().contains("Cannot add more roads"));
         assertEquals(2, intersection.getRoads().size());
@@ -62,8 +63,10 @@ class IntersectionTest {
 
         intersection.configureIncompatibleTrafficLights(northLight, eastLight);
 
+        TrafficLightGroup eastLightGroup = eastRoad.getIncomingLanesTrafficLightGroup();
+
         assertThrows(IllegalStateException.class,
-                () -> eastRoad.getIncomingLanesTrafficLightGroup().setLightColor(eastLight, Color.GREEN));
+                () -> eastLightGroup.setLightColor(eastLight, Color.GREEN));
         assertEquals(Color.RED, eastLight.getColor());
     }
 
