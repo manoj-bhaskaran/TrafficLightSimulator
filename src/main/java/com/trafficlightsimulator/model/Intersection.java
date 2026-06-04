@@ -1,6 +1,7 @@
 package com.trafficlightsimulator.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,7 +12,7 @@ public class Intersection {
     private static final int MIN_ROADS = 2; // Minimum roads required for an intersection
     private static final int MAX_ROADS = 8; // Maximum roads that can connect to an intersection
     private int numberOfRoads;
-    private List<Road> roads;
+    private final List<Road> roads;
 
     // Constructor with road count parameter
     public Intersection(int numberOfRoads) {
@@ -46,7 +47,7 @@ public class Intersection {
 
     // Method to retrieve all roads in the intersection
     public List<Road> getRoads() {
-        return roads;
+        return Collections.unmodifiableList(roads);
     }
 
     // Method to retrieve all lanes in the intersection (both incoming and outgoing)

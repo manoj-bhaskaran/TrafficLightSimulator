@@ -115,7 +115,7 @@ public class TrafficLightGroup {
 
     // Getter for the list of traffic lights
     public List<TrafficLight> getLights() {
-        return lights;
+        return Collections.unmodifiableList(lights);
     }
 
     // Method to display the current state of each light in the group (for debugging)

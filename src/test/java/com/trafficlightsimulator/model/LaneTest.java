@@ -20,6 +20,19 @@ class LaneTest {
     }
 
     @Test
+    void getAllowedOutgoingLanes_returnsUnmodifiableView() {
+        Lane incoming = new Lane(Lane.Direction.INCOMING);
+        Lane outgoing = new Lane(Lane.Direction.OUTGOING);
+        incoming.addAllowedOutgoingLane(outgoing);
+
+        assertThrows(UnsupportedOperationException.class,
+                () -> incoming.getAllowedOutgoingLanes().add(new Lane(Lane.Direction.OUTGOING)));
+
+        assertEquals(1, incoming.getAllowedOutgoingLanes().size());
+        assertSame(outgoing, incoming.getAllowedOutgoingLanes().get(0));
+    }
+
+    @Test
     void addAllowedOutgoingLane_allowsIncomingToOutgoingLane() {
         Lane incoming = new Lane(Lane.Direction.INCOMING);
         Lane outgoing = new Lane(Lane.Direction.OUTGOING);

@@ -85,6 +85,30 @@ class RoadTest {
     }
 
     @Test
+    void getIncomingLanes_returnsUnmodifiableView() {
+        Road road = new Road(0.0, 1, 1);
+        Lane originalLane = road.getIncomingLanes().get(0);
+
+        assertThrows(UnsupportedOperationException.class,
+                () -> road.getIncomingLanes().add(new Lane(Lane.Direction.INCOMING)));
+
+        assertEquals(1, road.getIncomingLanes().size());
+        assertSame(originalLane, road.getIncomingLanes().get(0));
+    }
+
+    @Test
+    void getOutgoingLanes_returnsUnmodifiableView() {
+        Road road = new Road(0.0, 1, 1);
+        Lane originalLane = road.getOutgoingLanes().get(0);
+
+        assertThrows(UnsupportedOperationException.class,
+                () -> road.getOutgoingLanes().clear());
+
+        assertEquals(1, road.getOutgoingLanes().size());
+        assertSame(originalLane, road.getOutgoingLanes().get(0));
+    }
+
+    @Test
     void setNumIncomingLanes_growthPreservesExistingLaneObjects() {
         Road road = new Road(0.0, 2, 1);
         Lane originalFirst = road.getIncomingLanes().get(0);

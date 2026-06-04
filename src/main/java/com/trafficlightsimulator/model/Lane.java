@@ -1,6 +1,7 @@
 package com.trafficlightsimulator.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,7 +14,7 @@ public class Lane {
     }
 
     private final Direction direction;
-    private List<Lane> allowedOutgoingLanes;
+    private final List<Lane> allowedOutgoingLanes;
 
     // Constructor
     public Lane(Direction direction) {
@@ -44,7 +45,7 @@ public class Lane {
 
     // Getter for allowed outgoing lanes
     public List<Lane> getAllowedOutgoingLanes() {
-        return allowedOutgoingLanes;
+        return Collections.unmodifiableList(allowedOutgoingLanes);
     }
 
     // Utility method to check if a lane is an allowed outgoing lane

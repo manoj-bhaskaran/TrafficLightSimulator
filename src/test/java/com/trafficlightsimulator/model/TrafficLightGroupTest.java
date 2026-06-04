@@ -22,6 +22,19 @@ class TrafficLightGroupTest {
     }
 
     @Test
+    void getLights_returnsUnmodifiableView() {
+        TrafficLightGroup group = new TrafficLightGroup();
+        TrafficLight light = trafficLight(Direction.STRAIGHT, Color.RED, State.ON);
+        group.addTrafficLight(light);
+
+        assertThrows(UnsupportedOperationException.class,
+                () -> group.getLights().add(trafficLight(Direction.LEFT, Color.RED, State.ON)));
+
+        assertEquals(1, group.getLights().size());
+        assertSame(light, group.getLights().get(0));
+    }
+
+    @Test
     void removeTrafficLight_removesMembershipAndConfiguredIncompatibilities() {
         TrafficLightGroup group = new TrafficLightGroup();
         TrafficLight northbound = trafficLight(Direction.STRAIGHT, Color.RED, State.ON);

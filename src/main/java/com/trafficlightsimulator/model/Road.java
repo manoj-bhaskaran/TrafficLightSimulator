@@ -1,6 +1,7 @@
 package com.trafficlightsimulator.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -8,8 +9,8 @@ import java.util.logging.Logger;
 public class Road {
     private static final Logger logger = Logger.getLogger(Road.class.getName());
     
-    private List<Lane> incomingLanes;
-    private List<Lane> outgoingLanes;
+    private final List<Lane> incomingLanes;
+    private final List<Lane> outgoingLanes;
     private PedestrianCrossing pedestrianCrossing;
     private TrafficLightGroup incomingLanesTrafficLightGroup;
     private double angle;  // Attribute for road angle
@@ -105,12 +106,12 @@ public class Road {
 
     // Getter for incoming lanes
     public List<Lane> getIncomingLanes() {
-        return incomingLanes;
+        return Collections.unmodifiableList(incomingLanes);
     }
 
     // Getter for outgoing lanes
     public List<Lane> getOutgoingLanes() {
-        return outgoingLanes;
+        return Collections.unmodifiableList(outgoingLanes);
     }
 
     // Getter for pedestrian crossing

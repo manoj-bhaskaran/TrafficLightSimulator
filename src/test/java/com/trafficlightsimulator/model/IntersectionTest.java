@@ -52,6 +52,19 @@ class IntersectionTest {
     }
 
     @Test
+    void getRoads_returnsUnmodifiableViewBackedByInternalRoads() {
+        Intersection intersection = new Intersection(2);
+        Road road = new Road(0.0, 1, 1);
+        intersection.addRoad(road);
+
+        assertThrows(UnsupportedOperationException.class,
+                () -> intersection.getRoads().add(new Road(90.0, 1, 1)));
+
+        assertEquals(1, intersection.getRoads().size());
+        assertSame(road, intersection.getRoads().get(0));
+    }
+
+    @Test
     void setNumberOfRoads_rejectsValueBelowCurrentRoadCount() {
         Intersection intersection = new Intersection(4);
         intersection.addRoad(new Road(0.0, 1, 1));
