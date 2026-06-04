@@ -1,13 +1,14 @@
 # Traffic Light Simulator
 
 Traffic Light Simulator is a Java 17 project for modeling traffic light
-simulation domain objects.
+simulation domain objects with a layered package structure for model, engine,
+and configuration concerns.
 
 ## Project metadata
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.8.0-SNAPSHOT`
+- **Current development version:** `0.9.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -63,7 +64,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.8.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.9.0-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors
@@ -93,6 +94,22 @@ To resolve it:
    mvn -U -B verify
    ```
 
+
+## Source package layout
+
+The Java source is organized into layered packages under
+`com.trafficlightsimulator`:
+
+- `app` contains the runnable application entry point.
+- `model` contains domain data objects such as intersections, roads, lanes,
+  traffic lights, pedestrian buttons, and crossings.
+- `engine` contains simulation lifecycle coordination, including traffic-light
+  group initialization and diagnostic display orchestration.
+- `config` contains validation limits and is the home for future builders and
+  factories.
+
+This keeps domain data, simulation behavior, and configuration policy from
+growing into a single package as the simulator expands.
 
 ## Model collection encapsulation
 

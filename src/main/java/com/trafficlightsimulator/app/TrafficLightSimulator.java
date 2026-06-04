@@ -1,5 +1,6 @@
-package com.trafficlightsimulator;
+package com.trafficlightsimulator.app;
 
+import com.trafficlightsimulator.engine.TrafficLightSimulationEngine;
 import com.trafficlightsimulator.model.Color;
 import com.trafficlightsimulator.model.Direction;
 import com.trafficlightsimulator.model.Intersection;
@@ -27,11 +28,12 @@ public final class TrafficLightSimulator {
      */
     public static void main(String[] args) {
         Intersection intersection = createSampleIntersection();
-        intersection.initializeTrafficLightGroups();
+        TrafficLightSimulationEngine engine = new TrafficLightSimulationEngine(intersection);
+        engine.initializeTrafficLightGroups();
 
         logger.log(Level.INFO, "Traffic Light Simulator started with {0} roads and {1} total lanes.",
                 new Object[]{intersection.getRoads().size(), intersection.getAllLanes().size()});
-        intersection.displayIntersectionStatus();
+        engine.displayIntersectionStatus();
     }
 
     private static Intersection createSampleIntersection() {

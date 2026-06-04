@@ -1,5 +1,7 @@
 package com.trafficlightsimulator.model;
 
+import com.trafficlightsimulator.config.IntersectionLimits;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,8 +11,6 @@ import java.util.logging.Logger;
 public class Intersection {
     private static final Logger logger = Logger.getLogger(Intersection.class.getName());
     
-    private static final int MIN_ROADS = 2; // Minimum roads required for an intersection
-    private static final int MAX_ROADS = 8; // Maximum roads that can connect to an intersection
     private int numberOfRoads;
     private final List<Road> roads;
 
@@ -22,8 +22,8 @@ public class Intersection {
 
     // Method to set the number of roads in the intersection with validation
     public void setNumberOfRoads(int numberOfRoads) {
-        if (numberOfRoads < MIN_ROADS || numberOfRoads > MAX_ROADS) {
-            throw new IllegalArgumentException("Number of roads must be between " + MIN_ROADS + " and " + MAX_ROADS);
+        if (numberOfRoads < IntersectionLimits.MIN_ROADS || numberOfRoads > IntersectionLimits.MAX_ROADS) {
+            throw new IllegalArgumentException("Number of roads must be between " + IntersectionLimits.MIN_ROADS + " and " + IntersectionLimits.MAX_ROADS);
         }
         if (roads != null && numberOfRoads < roads.size()) {
             throw new IllegalArgumentException(
