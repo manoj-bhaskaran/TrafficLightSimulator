@@ -29,6 +29,20 @@ class PedestrianCrossingTest {
     }
 
     @Test
+    void buttonConstructor_rejectsButtonAlreadyAttachedToAnotherCrossing() {
+        PedestrianButton sharedButton = new PedestrianButton(new TrafficLightGroup());
+        PedestrianCrossing firstCrossing = new PedestrianCrossing(sharedButton, null);
+        TrafficLightGroup firstCrossingLightGroup = firstCrossing.getPedestrianLightGroup();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new PedestrianCrossing(sharedButton, null));
+
+        assertTrue(exception.getMessage().contains("already attached"));
+        assertSame(firstCrossingLightGroup, sharedButton.getPedestrianLightGroup());
+        assertSame(sharedButton, firstCrossing.getButtonAtStart().orElseThrow());
+    }
+
+    @Test
     void isCrossingRequested_reflectsStartOrEndButtonPress() {
         PedestrianButton startButton = new PedestrianButton(new TrafficLightGroup());
         PedestrianButton endButton = new PedestrianButton(new TrafficLightGroup());

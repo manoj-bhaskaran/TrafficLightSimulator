@@ -15,8 +15,8 @@ the current `0.x` baseline.
 ### Added
 
 - Added pedestrian button/crossing linkage tests showing that buttons attached to a
-  crossing reference the crossing-owned pedestrian light group and can request the
-  crossing that owns those lights.
+  crossing reference the crossing-owned pedestrian light group, can request the
+  crossing that owns those lights, and cannot be reused by another crossing.
 - Added tests for `Road` lane-count validation (zero and negative counts rejected) and
   non-destructive lane resize (growth preserves existing lane objects; shrink removes
   only tail lanes) for both incoming and outgoing lanes.
@@ -28,7 +28,8 @@ the current `0.x` baseline.
 
 - Reconciled `PedestrianButton` and `PedestrianCrossing` light-group ownership so
   crossings own the pedestrian light group and constructor-supplied buttons are
-  connected to that same group.
+  connected to that same group without allowing a later crossing to steal an
+  already-attached button.
 - Removed `Optional` fields from `PedestrianCrossing` while keeping
   `Optional`-returning button getters, and simplified `PedestrianButton.press()`
   to set the pressed state directly.

@@ -2,6 +2,7 @@ package com.trafficlightsimulator.model;
 
 public class PedestrianButton {
     private TrafficLightGroup pedestrianLightGroup;
+    private Object crossingAttachment;
     private boolean pressed;
 
     // Constructor
@@ -10,6 +11,7 @@ public class PedestrianButton {
             throw new IllegalArgumentException("Pedestrian light group must not be null.");
         }
         this.pedestrianLightGroup = pedestrianLightGroup;
+        this.crossingAttachment = null;
         this.pressed = false;
     }
 
@@ -33,10 +35,17 @@ public class PedestrianButton {
         return pedestrianLightGroup;
     }
 
-    void setPedestrianLightGroup(TrafficLightGroup pedestrianLightGroup) {
+    void attachToCrossing(Object crossingAttachment, TrafficLightGroup pedestrianLightGroup) {
+        if (crossingAttachment == null) {
+            throw new IllegalArgumentException("Crossing attachment must not be null.");
+        }
         if (pedestrianLightGroup == null) {
             throw new IllegalArgumentException("Pedestrian light group must not be null.");
         }
+        if (this.crossingAttachment != null && this.crossingAttachment != crossingAttachment) {
+            throw new IllegalArgumentException("Pedestrian button is already attached to another crossing.");
+        }
+        this.crossingAttachment = crossingAttachment;
         this.pedestrianLightGroup = pedestrianLightGroup;
     }
 }

@@ -8,6 +8,7 @@ public class PedestrianCrossing {
     private static final Logger logger = Logger.getLogger(PedestrianCrossing.class.getName());
     
     private final TrafficLightGroup pedestrianLightGroup;
+    private final Object buttonAttachment;
     private PedestrianButton buttonAtStart;
     private PedestrianButton buttonAtEnd;
 
@@ -19,6 +20,7 @@ public class PedestrianCrossing {
     // Constructor with buttons at both ends
     public PedestrianCrossing(PedestrianButton buttonAtStart, PedestrianButton buttonAtEnd) {
         this.pedestrianLightGroup = new TrafficLightGroup();
+        this.buttonAttachment = new Object();
         this.buttonAtStart = buttonAtStart;
         this.buttonAtEnd = buttonAtEnd;
         connectButton(buttonAtStart);
@@ -69,7 +71,7 @@ public class PedestrianCrossing {
 
     private void connectButton(PedestrianButton button) {
         if (button != null) {
-            button.setPedestrianLightGroup(pedestrianLightGroup);
+            button.attachToCrossing(buttonAttachment, pedestrianLightGroup);
         }
     }
 

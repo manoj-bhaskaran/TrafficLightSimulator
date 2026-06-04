@@ -113,8 +113,10 @@ group, so either group prevents simultaneous conflicting green signals.
 `PedestrianCrossing` owns the pedestrian `TrafficLightGroup` for that crossing.
 When a crossing is constructed with start and/or end `PedestrianButton` instances,
 the crossing connects those buttons to its owned light group, so a pressed button
-has a defined path back to the lights controlled by that crossing. The button
-getters remain useful for inspecting the linked light group, while
+has a defined path back to the lights controlled by that crossing. A button that
+is already attached to one crossing cannot be reused by another crossing, which
+keeps existing crossings from losing their button-to-light-group invariant. The
+button getters remain useful for inspecting the linked light group, while
 `PedestrianCrossing.getButtonAtStart()` and `getButtonAtEnd()` return `Optional`
 views for callers that need to handle crossings without buttons.
 
