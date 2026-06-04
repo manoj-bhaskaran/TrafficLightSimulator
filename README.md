@@ -7,7 +7,7 @@ simulation domain objects.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.3.0-SNAPSHOT`
+- **Current development version:** `0.4.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -34,6 +34,20 @@ Run the Maven verification lifecycle from the repository root:
 mvn -B verify
 ```
 
+## Automated tests and coverage
+
+The repository uses JUnit Jupiter for unit tests, Maven Surefire to run tests in
+the standard Maven lifecycle, and JaCoCo to generate coverage. Run the full
+verification lifecycle to compile the project, execute tests, and write the XML
+coverage report consumed by SonarQube Cloud:
+
+```sh
+mvn -B verify
+```
+
+The JaCoCo XML report is generated at
+`target/site/jacoco/jacoco.xml`.
+
 ## Running the application
 
 Run the simulator entry point directly with Maven:
@@ -46,7 +60,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.3.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.4.0-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors
@@ -101,12 +115,15 @@ resolution portable across Linux, macOS, and Windows.
 
 The Maven build pins the SonarQube Cloud scanner plugin version through the
 `sonar.maven.plugin.version` property so CI does not use an implicit, changing
-scanner version. Sonar analysis is skipped by default so pull-request builds do
-not fail when `SONAR_TOKEN` is unavailable. Enable analysis explicitly with the
-`sonarcloud` Maven profile and a valid token:
+scanner version. The build also sets
+`sonar.coverage.jacoco.xmlReportPaths` to `target/site/jacoco/jacoco.xml`, so
+SonarQube Cloud imports JaCoCo coverage produced during `mvn verify`. Sonar
+analysis is skipped by default so pull-request builds do not fail when
+`SONAR_TOKEN` is unavailable. Enable analysis explicitly with the `sonarcloud`
+Maven profile and a valid token:
 
 ```sh
-SONAR_TOKEN=<token> mvn -B -Psonarcloud sonar:sonar
+SONAR_TOKEN=<token> mvn -B -Psonarcloud verify sonar:sonar
 ```
 
 ## License

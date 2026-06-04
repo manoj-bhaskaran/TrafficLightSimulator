@@ -14,6 +14,11 @@ the current `0.x` baseline.
 
 ### Added
 
+- Added JaCoCo coverage instrumentation and XML report generation during
+  `mvn verify`, plus SonarQube Cloud coverage report path wiring for CI
+  analysis.
+- Added validation tests for `Intersection` road-count bounds and add-road
+  capacity, plus `Road` angle bounds tests.
 - Added traffic-light incompatibility rules to `TrafficLightGroup`, including
   symmetric configuration, removal, lookup, and guarded per-light color/state
   updates that reject incompatible simultaneous `GREEN`/`ON` signals with clear
@@ -40,6 +45,11 @@ the current `0.x` baseline.
 
 ### Changed
 
+- Incremented the pre-MVP development version from `0.3.0-SNAPSHOT` to
+  `0.4.0-SNAPSHOT` for the automated testing and coverage framework.
+- Updated CI to run SonarQube Cloud analysis with the `sonarcloud` profile so
+  scanner execution imports the generated JaCoCo XML coverage report.
+- Documented the automated test and coverage workflow in the README.
 - Incremented the pre-MVP development version from `0.2.0-SNAPSHOT` to
   `0.3.0-SNAPSHOT` for the traffic-light incompatibility feature.
 - Documented traffic-light safety rule configuration and enforcement in the

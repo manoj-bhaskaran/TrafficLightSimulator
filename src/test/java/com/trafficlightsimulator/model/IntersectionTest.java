@@ -7,6 +7,48 @@ import static org.junit.jupiter.api.Assertions.*;
 class IntersectionTest {
 
     @Test
+    void constructor_acceptsMinimumAndMaximumRoadCounts() {
+        assertEquals(0, new Intersection(2).getRoads().size());
+        assertEquals(0, new Intersection(8).getRoads().size());
+    }
+
+    @Test
+    void constructor_rejectsRoadCountBelowMinimum() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new Intersection(1));
+
+        assertTrue(exception.getMessage().contains("between 2 and 8"));
+    }
+
+    @Test
+    void constructor_rejectsRoadCountAboveMaximum() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new Intersection(9));
+
+        assertTrue(exception.getMessage().contains("between 2 and 8"));
+    }
+
+    @Test
+    void addRoad_rejectsNullRoad() {
+        Intersection intersection = new Intersection(2);
+
+        assertThrows(IllegalArgumentException.class, () -> intersection.addRoad(null));
+    }
+
+    @Test
+    void addRoad_rejectsRoadsBeyondConfiguredCapacity() {
+        Intersection intersection = new Intersection(2);
+        intersection.addRoad(new Road(0.0, 1, 1));
+        intersection.addRoad(new Road(90.0, 1, 1));
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> intersection.addRoad(new Road(180.0, 1, 1)));
+
+        assertTrue(exception.getMessage().contains("Cannot add more roads"));
+        assertEquals(2, intersection.getRoads().size());
+    }
+
+    @Test
     void configureIncompatibleTrafficLights_enforcesConflictsAcrossRoadGroups() {
         Intersection intersection = new Intersection(2);
         Road northRoad = new Road(0.0, 1, 1);
