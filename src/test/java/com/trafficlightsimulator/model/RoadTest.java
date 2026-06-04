@@ -184,8 +184,9 @@ class RoadTest {
     void addPedestrianCrossing_rejectsSecondCrossing() {
         Road road = new Road(0.0, 1, 1);
         road.addPedestrianCrossing(new PedestrianCrossing());
+        PedestrianCrossing anotherCrossing = new PedestrianCrossing();
 
-        assertThrows(IllegalStateException.class, () -> road.addPedestrianCrossing(new PedestrianCrossing()));
+        assertThrows(IllegalStateException.class, () -> road.addPedestrianCrossing(anotherCrossing));
     }
 
     @Test
