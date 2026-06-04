@@ -35,7 +35,9 @@ the current `0.x` baseline.
   which is already used throughout the codebase (`TrafficLight`,
   `PedestrianCrossing`).
 - Incremented the pre-MVP development version from `0.1.2-SNAPSHOT` to
-  `0.1.3-SNAPSHOT` for the `setColor` correctness fix and `Type` consolidation.
+  `0.2.0-SNAPSHOT`. Deletion of the public top-level `Type` class is a
+  breaking API change; per the project versioning policy, breaking changes
+  require a minor-version increment in the `0.x` range.
 
 - Added a runnable application entry point that bootstraps and logs a sample
   traffic-light intersection.
