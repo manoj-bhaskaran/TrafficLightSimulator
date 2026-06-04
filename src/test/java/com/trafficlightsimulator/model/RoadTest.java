@@ -1,5 +1,7 @@
 package com.trafficlightsimulator.model;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -82,6 +84,31 @@ class RoadTest {
     @Test
     void constructor_rejectsNegativeOutgoingLaneCount() {
         assertThrows(IllegalArgumentException.class, () -> new Road(0.0, 1, -1));
+    }
+
+    @Test
+    void getIncomingLanes_returnsUnmodifiableView() {
+        Road road = new Road(0.0, 1, 1);
+        List<Lane> incomingLanes = road.getIncomingLanes();
+        Lane originalLane = incomingLanes.get(0);
+        Lane anotherIncoming = new Lane(Lane.Direction.INCOMING);
+
+        assertThrows(UnsupportedOperationException.class, () -> incomingLanes.add(anotherIncoming));
+
+        assertEquals(1, road.getIncomingLanes().size());
+        assertSame(originalLane, road.getIncomingLanes().get(0));
+    }
+
+    @Test
+    void getOutgoingLanes_returnsUnmodifiableView() {
+        Road road = new Road(0.0, 1, 1);
+        List<Lane> outgoingLanes = road.getOutgoingLanes();
+        Lane originalLane = outgoingLanes.get(0);
+
+        assertThrows(UnsupportedOperationException.class, outgoingLanes::clear);
+
+        assertEquals(1, road.getOutgoingLanes().size());
+        assertSame(originalLane, road.getOutgoingLanes().get(0));
     }
 
     @Test

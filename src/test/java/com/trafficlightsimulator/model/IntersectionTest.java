@@ -1,5 +1,7 @@
 package com.trafficlightsimulator.model;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
@@ -49,6 +51,21 @@ class IntersectionTest {
 
         assertTrue(exception.getMessage().contains("Cannot add more roads"));
         assertEquals(2, intersection.getRoads().size());
+    }
+
+    @Test
+    void getRoads_returnsUnmodifiableViewBackedByInternalRoads() {
+        Intersection intersection = new Intersection(2);
+        Road road = new Road(0.0, 1, 1);
+        intersection.addRoad(road);
+
+        List<Road> roads = intersection.getRoads();
+        Road anotherRoad = new Road(90.0, 1, 1);
+
+        assertThrows(UnsupportedOperationException.class, () -> roads.add(anotherRoad));
+
+        assertEquals(1, intersection.getRoads().size());
+        assertSame(road, intersection.getRoads().get(0));
     }
 
     @Test

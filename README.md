@@ -7,7 +7,7 @@ simulation domain objects.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.7.0-SNAPSHOT`
+- **Current development version:** `0.8.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -63,7 +63,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.7.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.8.0-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors
@@ -93,6 +93,15 @@ To resolve it:
    mvn -U -B verify
    ```
 
+
+## Model collection encapsulation
+
+Collection getters on core model objects expose read-only views of their backing
+collections. Callers can inspect roads, lanes, traffic lights, and allowed lane
+routes through getters, but structural changes must go through the model methods
+such as `Intersection.addRoad`, `Road.setNumIncomingLanes`,
+`Road.setNumOutgoingLanes`, `TrafficLightGroup.addTrafficLight`, and
+`Lane.addAllowedOutgoingLane` so validation and safety rules remain enforced.
 
 ## Traffic-light safety rules
 

@@ -1,8 +1,9 @@
 package com.trafficlightsimulator.model;
 
-import org.junit.jupiter.api.Test;
-
+import java.util.List;
 import java.util.Set;
+
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,6 +20,21 @@ class TrafficLightGroupTest {
         assertEquals(1, group.getLights().size());
         assertSame(light, group.getLights().get(0));
         assertTrue(group.getIncompatibleLights(light).isEmpty());
+    }
+
+    @Test
+    void getLights_returnsUnmodifiableView() {
+        TrafficLightGroup group = new TrafficLightGroup();
+        TrafficLight light = trafficLight(Direction.STRAIGHT, Color.RED, State.ON);
+        group.addTrafficLight(light);
+
+        List<TrafficLight> lights = group.getLights();
+        TrafficLight anotherLight = trafficLight(Direction.LEFT, Color.RED, State.ON);
+
+        assertThrows(UnsupportedOperationException.class, () -> lights.add(anotherLight));
+
+        assertEquals(1, group.getLights().size());
+        assertSame(light, group.getLights().get(0));
     }
 
     @Test

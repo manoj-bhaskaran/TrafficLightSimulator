@@ -14,6 +14,8 @@ the current `0.x` baseline.
 
 ### Added
 
+- Added encapsulation regression tests proving model collection getters expose
+  read-only views and external mutation attempts throw `UnsupportedOperationException`.
 - Added pedestrian button/crossing linkage tests showing that buttons attached to a
   crossing reference the crossing-owned pedestrian light group, can request the
   crossing that owns those lights, and cannot be reused by another crossing.
@@ -48,6 +50,10 @@ the current `0.x` baseline.
 
 ### Changed
 
+- Incremented the pre-MVP development version from `0.7.0-SNAPSHOT` to
+  `0.8.0-SNAPSHOT` for the model collection getter encapsulation hardening.
+- Changed model collection getters for intersections, roads, traffic-light groups,
+  and lanes to expose unmodifiable views instead of mutable backing lists.
 - Incremented the pre-MVP development version from `0.6.0-SNAPSHOT` to
   `0.7.0-SNAPSHOT` for the pedestrian crossing/button relationship cleanup.
 - Incremented the pre-MVP development version from `0.5.0-SNAPSHOT` to
