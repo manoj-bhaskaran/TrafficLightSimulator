@@ -19,11 +19,17 @@ public class TrafficLight {
 
     // Constructor
     public TrafficLight(Color color, State state, Type type, Direction direction, boolean isMultiColor) {
-        this.color = color;
-        this.state = state;
+        if (type == null) {
+            throw new IllegalArgumentException("Traffic light type must not be null.");
+        }
+        if (direction == null) {
+            throw new IllegalArgumentException("Direction must not be null.");
+        }
         this.type = type;
         this.direction = direction;
         this.isMultiColor = isMultiColor;
+        setColor(color);
+        setState(state);
     }
 
     // Getters and Setters
@@ -46,6 +52,9 @@ public class TrafficLight {
     }
 
     public void setState(State state) {
+        if (state == null) {
+            throw new IllegalArgumentException("State must not be null.");
+        }
         this.state = state;
     }
 
@@ -58,6 +67,9 @@ public class TrafficLight {
     }
 
     public void setDirection(Direction direction) {
+        if (direction == null) {
+            throw new IllegalArgumentException("Direction must not be null.");
+        }
         this.direction = direction;
     }
 

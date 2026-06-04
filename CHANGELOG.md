@@ -14,6 +14,9 @@ the current `0.x` baseline.
 
 ### Added
 
+- Added comprehensive model unit tests for traffic-light validation, group
+  add/remove and bulk-update behavior, lane routing constraints, pedestrian
+  crossing requests, and pedestrian button press/reset lifecycles.
 - Added JaCoCo coverage instrumentation and XML report generation during
   `mvn verify`, plus SonarQube Cloud coverage report path wiring for CI
   analysis.
@@ -45,6 +48,10 @@ the current `0.x` baseline.
 
 ### Changed
 
+- Incremented the pre-MVP development version from `0.4.0-SNAPSHOT` to
+  `0.5.0-SNAPSHOT` for the expanded model test coverage baseline.
+- Hardened `TrafficLight` and `Lane` input validation so null constructor and
+  mutator arguments fail with clear `IllegalArgumentException` messages.
 - Incremented the pre-MVP development version from `0.3.0-SNAPSHOT` to
   `0.4.0-SNAPSHOT` for the automated testing and coverage framework.
 - Updated CI to run SonarQube Cloud analysis with the `sonarcloud` profile so
