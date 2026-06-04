@@ -43,11 +43,18 @@ public class Road {
 
     // Setter for number of incoming lanes
     public void setNumIncomingLanes(int numIncomingLanes) {
-        this.numIncomingLanes = numIncomingLanes;
-        this.incomingLanes.clear();
-        for (int i = 0; i < numIncomingLanes; i++) {
-            this.incomingLanes.add(new Lane(Lane.Direction.INCOMING));
+        if (numIncomingLanes < 1) {
+            throw new IllegalArgumentException("Number of incoming lanes must be at least 1.");
         }
+        int current = this.incomingLanes.size();
+        if (numIncomingLanes > current) {
+            for (int i = current; i < numIncomingLanes; i++) {
+                this.incomingLanes.add(new Lane(Lane.Direction.INCOMING));
+            }
+        } else if (numIncomingLanes < current) {
+            this.incomingLanes.subList(numIncomingLanes, current).clear();
+        }
+        this.numIncomingLanes = numIncomingLanes;
         logger.log(Level.INFO, "Number of incoming lanes set to: {0}", numIncomingLanes);
     }
 
@@ -58,11 +65,18 @@ public class Road {
 
     // Setter for number of outgoing lanes
     public void setNumOutgoingLanes(int numOutgoingLanes) {
-        this.numOutgoingLanes = numOutgoingLanes;
-        this.outgoingLanes.clear();
-        for (int i = 0; i < numOutgoingLanes; i++) {
-            this.outgoingLanes.add(new Lane(Lane.Direction.OUTGOING));
+        if (numOutgoingLanes < 1) {
+            throw new IllegalArgumentException("Number of outgoing lanes must be at least 1.");
         }
+        int current = this.outgoingLanes.size();
+        if (numOutgoingLanes > current) {
+            for (int i = current; i < numOutgoingLanes; i++) {
+                this.outgoingLanes.add(new Lane(Lane.Direction.OUTGOING));
+            }
+        } else if (numOutgoingLanes < current) {
+            this.outgoingLanes.subList(numOutgoingLanes, current).clear();
+        }
+        this.numOutgoingLanes = numOutgoingLanes;
         logger.log(Level.INFO, "Number of outgoing lanes set to: {0}", numOutgoingLanes);
     }
 

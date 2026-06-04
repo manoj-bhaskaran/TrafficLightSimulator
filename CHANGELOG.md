@@ -14,6 +14,36 @@ the current `0.x` baseline.
 
 ### Added
 
+- Added tests for `Road` lane-count validation (zero and negative counts rejected) and
+  non-destructive lane resize (growth preserves existing lane objects; shrink removes
+  only tail lanes) for both incoming and outgoing lanes.
+- Added tests for `Intersection.setNumberOfRoads` guarding against shrinking the
+  capacity below the number of roads already added, including the equal-to-count
+  boundary case.
+
+### Fixed
+
+- `Road.setNumIncomingLanes` and `Road.setNumOutgoingLanes` previously cleared and
+  rebuilt the entire lane list on every call, silently discarding configured turn
+  restrictions and traffic-light assignments. The resize is now incremental: lanes are
+  appended when growing and only tail lanes are removed when shrinking, preserving all
+  existing lane configuration.
+- `Road.setNumIncomingLanes` and `Road.setNumOutgoingLanes` previously accepted zero
+  and negative counts, storing the invalid value while producing no lanes. Both setters
+  now reject any count below 1 with `IllegalArgumentException`.
+- `Intersection.setNumberOfRoads` could previously be called with a value lower than
+  the number of roads already added, making `isIntersectionSetupComplete()` permanently
+  false with no path to recovery. The setter now rejects any value below `roads.size()`
+  with `IllegalArgumentException`.
+
+### Changed
+
+- Incremented the pre-MVP development version from `0.5.0-SNAPSHOT` to
+  `0.6.0-SNAPSHOT` for the hardened Road/Intersection validation and non-destructive
+  lane resize.
+
+### Added
+
 - Added comprehensive model unit tests for traffic-light validation, group
   add/remove and bulk-update behavior, lane routing constraints, pedestrian
   crossing requests, and pedestrian button press/reset lifecycles.

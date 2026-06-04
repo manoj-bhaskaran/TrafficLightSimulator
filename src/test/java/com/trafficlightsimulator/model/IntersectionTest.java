@@ -52,6 +52,29 @@ class IntersectionTest {
     }
 
     @Test
+    void setNumberOfRoads_rejectsValueBelowCurrentRoadCount() {
+        Intersection intersection = new Intersection(4);
+        intersection.addRoad(new Road(0.0, 1, 1));
+        intersection.addRoad(new Road(90.0, 1, 1));
+        intersection.addRoad(new Road(180.0, 1, 1));
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> intersection.setNumberOfRoads(2));
+
+        assertTrue(exception.getMessage().contains("already added"));
+    }
+
+    @Test
+    void setNumberOfRoads_acceptsValueEqualToCurrentRoadCount() {
+        Intersection intersection = new Intersection(4);
+        intersection.addRoad(new Road(0.0, 1, 1));
+        intersection.addRoad(new Road(90.0, 1, 1));
+        intersection.addRoad(new Road(180.0, 1, 1));
+
+        assertDoesNotThrow(() -> intersection.setNumberOfRoads(3));
+    }
+
+    @Test
     void configureIncompatibleTrafficLights_enforcesConflictsAcrossRoadGroups() {
         Intersection intersection = new Intersection(2);
         Road northRoad = new Road(0.0, 1, 1);

@@ -24,6 +24,10 @@ public class Intersection {
         if (numberOfRoads < MIN_ROADS || numberOfRoads > MAX_ROADS) {
             throw new IllegalArgumentException("Number of roads must be between " + MIN_ROADS + " and " + MAX_ROADS);
         }
+        if (roads != null && numberOfRoads < roads.size()) {
+            throw new IllegalArgumentException(
+                    "Number of roads cannot be less than the number of roads already added: " + roads.size());
+        }
         this.numberOfRoads = numberOfRoads;
         logger.log(Level.INFO, "Number of roads set to: {0}", numberOfRoads);
     }
