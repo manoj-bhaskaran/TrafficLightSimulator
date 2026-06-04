@@ -14,6 +14,16 @@ the current `0.x` baseline.
 
 ### Added
 
+- Added traffic-light incompatibility rules to `TrafficLightGroup`, including
+  symmetric configuration, removal, lookup, and guarded per-light color/state
+  updates that reject incompatible simultaneous `GREEN`/`ON` signals with clear
+  feedback.
+- Added `Intersection.configureIncompatibleTrafficLights` to register
+  incompatibility rules across the road and pedestrian light groups that belong
+  to an intersection.
+- Added unit tests covering incompatibility configuration, conflict prevention,
+  inactive-light allowance, group membership validation, and cross-road
+  intersection enforcement.
 - Added JUnit Jupiter 5.11 as a test-scoped dependency and configured
   `maven-surefire-plugin` 3.3.1 to run JUnit 5 tests.
 - Added `TrafficLightTest` covering `setColor` for all combinations of
@@ -29,6 +39,11 @@ the current `0.x` baseline.
   `IllegalArgumentException` with a clear message.
 
 ### Changed
+
+- Incremented the pre-MVP development version from `0.2.0-SNAPSHOT` to
+  `0.3.0-SNAPSHOT` for the traffic-light incompatibility feature.
+- Documented traffic-light safety rule configuration and enforcement in the
+  README.
 
 - Deleted the top-level `Type.java` enum (`TRAFFIC`, `PEDESTRIAN`), which was
   dead code. The canonical definition is the nested `TrafficLight.Type` enum,
