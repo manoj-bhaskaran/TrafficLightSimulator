@@ -12,6 +12,7 @@
         <exec.mainClass>com.trafficlightsimulator.TrafficLightSimulator</exec.mainClass>
         <javafx.version>17.0.2</javafx.version> <!-- Updated to JavaFX 17 for compatibility with Java 17 -->
         <sonar.maven.plugin.version>5.7.0.6970</sonar.maven.plugin.version>
+        <sonar.skip>true</sonar.skip>
         <sonar.organization>manoj-bhaskaran</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
@@ -35,6 +36,15 @@
             <classifier>win</classifier>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>sonarcloud</id>
+            <properties>
+                <sonar.skip>false</sonar.skip>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <plugins>

@@ -38,11 +38,12 @@ mvn -B verify
 
 The Maven build pins the SonarQube Cloud scanner plugin version through the
 `sonar.maven.plugin.version` property so CI does not use an implicit, changing
-scanner version. To run SonarQube analysis locally or in CI, provide a valid
-SonarQube Cloud token before invoking the scanner:
+scanner version. Sonar analysis is skipped by default so pull-request builds do
+not fail when `SONAR_TOKEN` is unavailable. Enable analysis explicitly with the
+`sonarcloud` Maven profile and a valid token:
 
 ```sh
-SONAR_TOKEN=<token> mvn -B sonar:sonar
+SONAR_TOKEN=<token> mvn -B -Psonarcloud sonar:sonar
 ```
 
 ## License
