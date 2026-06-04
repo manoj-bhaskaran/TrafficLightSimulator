@@ -1,10 +1,55 @@
 package com.trafficlightsimulator.model;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class IntersectionTest {
+
+    @Test
+    void constructor_acceptsMinimumAndMaximumRoadCounts() {
+        assertEquals(0, new Intersection(2).getRoads().size());
+        assertEquals(0, new Intersection(8).getRoads().size());
+    }
+
+    @Test
+    void constructor_rejectsRoadCountBelowMinimum() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new Intersection(1));
+
+        assertTrue(exception.getMessage().contains("between 2 and 8"));
+    }
+
+    @Test
+    void constructor_rejectsRoadCountAboveMaximum() {
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new Intersection(9));
+
+        assertTrue(exception.getMessage().contains("between 2 and 8"));
+    }
+
+    @Test
+    void addRoad_rejectsNullRoad() {
+        Intersection intersection = new Intersection(2);
+
+        assertThrows(IllegalArgumentException.class, () -> intersection.addRoad(null));
+    }
+
+    @Test
+    void addRoad_rejectsRoadsBeyondConfiguredCapacity() {
+        Intersection intersection = new Intersection(2);
+        intersection.addRoad(new Road(0.0, 1, 1));
+        intersection.addRoad(new Road(90.0, 1, 1));
+        Road extraRoad = new Road(180.0, 1, 1);
+
+        Executable addExtraRoad = () -> intersection.addRoad(extraRoad);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class, addExtraRoad);
+
+        assertTrue(exception.getMessage().contains("Cannot add more roads"));
+        assertEquals(2, intersection.getRoads().size());
+    }
 
     @Test
     void configureIncompatibleTrafficLights_enforcesConflictsAcrossRoadGroups() {
@@ -20,8 +65,11 @@ class IntersectionTest {
 
         intersection.configureIncompatibleTrafficLights(northLight, eastLight);
 
-        assertThrows(IllegalStateException.class,
-                () -> eastRoad.getIncomingLanesTrafficLightGroup().setLightColor(eastLight, Color.GREEN));
+        TrafficLightGroup eastLightGroup = eastRoad.getIncomingLanesTrafficLightGroup();
+
+        Executable activateEastLight = () -> eastLightGroup.setLightColor(eastLight, Color.GREEN);
+
+        assertThrows(IllegalStateException.class, activateEastLight);
         assertEquals(Color.RED, eastLight.getColor());
     }
 
