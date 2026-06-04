@@ -7,7 +7,7 @@ simulation domain objects.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.4.0-SNAPSHOT`
+- **Current development version:** `0.5.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -46,7 +46,10 @@ mvn -B verify
 ```
 
 The JaCoCo XML report is generated at
-`target/site/jacoco/jacoco.xml`.
+`target/site/jacoco/jacoco.xml`. The model package unit-test suite covers
+traffic-light validation and group safety rules, lane routing constraints, and
+pedestrian button/crossing request lifecycles so coverage gates exercise the
+core domain behavior.
 
 ## Running the application
 
@@ -60,7 +63,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.4.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.5.0-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors

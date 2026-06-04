@@ -17,12 +17,18 @@ public class Lane {
 
     // Constructor
     public Lane(Direction direction) {
+        if (direction == null) {
+            throw new IllegalArgumentException("Lane direction must not be null.");
+        }
         this.direction = direction;
         this.allowedOutgoingLanes = new ArrayList<>();
     }
 
     // Method to add an allowed outgoing lane (only applicable for incoming lanes)
     public void addAllowedOutgoingLane(Lane lane) {
+        if (lane == null) {
+            throw new IllegalArgumentException("Allowed outgoing lane must not be null.");
+        }
         if (this.direction == Direction.INCOMING && lane.direction == Direction.OUTGOING) {
             allowedOutgoingLanes.add(lane);
             logger.log(Level.INFO, "Added allowed outgoing lane: {0}", lane);
