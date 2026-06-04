@@ -89,8 +89,9 @@ class TrafficLightGroupTest {
         group.addIncompatibleLights(northbound, eastbound);
 
         Set<TrafficLight> incompatibleLights = group.getIncompatibleLights(northbound);
+        TrafficLight additionalLight = trafficLight(Direction.RIGHT, Color.RED, State.ON);
 
-        assertThrows(UnsupportedOperationException.class, () -> incompatibleLights.add(trafficLight(Direction.RIGHT, Color.RED, State.ON)));
+        assertThrows(UnsupportedOperationException.class, () -> incompatibleLights.add(additionalLight));
         assertThrows(IllegalArgumentException.class, () -> group.getIncompatibleLights(null));
     }
 
