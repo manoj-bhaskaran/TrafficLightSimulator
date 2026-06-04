@@ -1,5 +1,7 @@
 package com.trafficlightsimulator.model;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,8 +27,10 @@ class LaneTest {
         Lane outgoing = new Lane(Lane.Direction.OUTGOING);
         incoming.addAllowedOutgoingLane(outgoing);
 
-        assertThrows(UnsupportedOperationException.class,
-                () -> incoming.getAllowedOutgoingLanes().add(new Lane(Lane.Direction.OUTGOING)));
+        List<Lane> allowedOutgoingLanes = incoming.getAllowedOutgoingLanes();
+        Lane anotherOutgoing = new Lane(Lane.Direction.OUTGOING);
+
+        assertThrows(UnsupportedOperationException.class, () -> allowedOutgoingLanes.add(anotherOutgoing));
 
         assertEquals(1, incoming.getAllowedOutgoingLanes().size());
         assertSame(outgoing, incoming.getAllowedOutgoingLanes().get(0));

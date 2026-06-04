@@ -1,5 +1,7 @@
 package com.trafficlightsimulator.model;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.function.Executable;
 
@@ -57,8 +59,10 @@ class IntersectionTest {
         Road road = new Road(0.0, 1, 1);
         intersection.addRoad(road);
 
-        assertThrows(UnsupportedOperationException.class,
-                () -> intersection.getRoads().add(new Road(90.0, 1, 1)));
+        List<Road> roads = intersection.getRoads();
+        Road anotherRoad = new Road(90.0, 1, 1);
+
+        assertThrows(UnsupportedOperationException.class, () -> roads.add(anotherRoad));
 
         assertEquals(1, intersection.getRoads().size());
         assertSame(road, intersection.getRoads().get(0));
