@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class RoadTest {
 
@@ -157,5 +160,63 @@ class RoadTest {
 
         assertEquals(1, road.getOutgoingLanes().size());
         assertSame(originalFirst, road.getOutgoingLanes().get(0));
+    }
+
+    @Test
+    void addPedestrianCrossing_associatesCrossingWithRoad() {
+        Road road = new Road(0.0, 1, 1);
+        PedestrianCrossing crossing = new PedestrianCrossing();
+
+        road.addPedestrianCrossing(crossing);
+
+        assertTrue(road.hasPedestrianCrossing());
+        assertSame(crossing, road.getPedestrianCrossing());
+    }
+
+    @Test
+    void addPedestrianCrossing_rejectsNull() {
+        Road road = new Road(0.0, 1, 1);
+
+        assertThrows(IllegalArgumentException.class, () -> road.addPedestrianCrossing(null));
+    }
+
+    @Test
+    void addPedestrianCrossing_rejectsSecondCrossing() {
+        Road road = new Road(0.0, 1, 1);
+        road.addPedestrianCrossing(new PedestrianCrossing());
+        PedestrianCrossing anotherCrossing = new PedestrianCrossing();
+
+        assertThrows(IllegalStateException.class, () -> road.addPedestrianCrossing(anotherCrossing));
+    }
+
+    @Test
+    void removePedestrianCrossing_disassociatesCrossingFromRoad() {
+        Road road = new Road(0.0, 1, 1);
+        road.addPedestrianCrossing(new PedestrianCrossing());
+
+        road.removePedestrianCrossing();
+
+        assertFalse(road.hasPedestrianCrossing());
+        assertNull(road.getPedestrianCrossing());
+    }
+
+    @Test
+    void removePedestrianCrossing_throwsWhenNoCrossingPresent() {
+        Road road = new Road(0.0, 1, 1);
+
+        assertThrows(IllegalStateException.class, road::removePedestrianCrossing);
+    }
+
+    @Test
+    void addThenRemoveThenAddCrossing_succeeds() {
+        Road road = new Road(0.0, 1, 1);
+        PedestrianCrossing first = new PedestrianCrossing();
+        PedestrianCrossing second = new PedestrianCrossing();
+
+        road.addPedestrianCrossing(first);
+        road.removePedestrianCrossing();
+        road.addPedestrianCrossing(second);
+
+        assertSame(second, road.getPedestrianCrossing());
     }
 }

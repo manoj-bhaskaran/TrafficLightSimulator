@@ -14,6 +14,24 @@ the current `0.x` baseline.
 
 ### Added
 
+- `PedestrianCrossing.ControlType` enum (`BUTTON_CONTROLLED`, `AUTOMATED`) to distinguish
+  button-operated crossings from those controlled automatically by the simulation engine.
+- `PedestrianCrossing.getControlType()` to query a crossing's control mode.
+- `PedestrianCrossing.activate()` and `PedestrianCrossing.deactivate()` to grant or revoke
+  the pedestrian right-of-way by setting all lights in the crossing's pedestrian light group
+  to GREEN+ON or RED+ON respectively.
+- `PedestrianCrossing.isActive()` to check whether any pedestrian light in the crossing is
+  currently GREEN and ON.
+- `Road.addPedestrianCrossing(PedestrianCrossing)` to associate a crossing with a road;
+  throws `IllegalArgumentException` for null and `IllegalStateException` if a crossing is
+  already present.
+- `Road.removePedestrianCrossing()` to disassociate the current crossing from a road;
+  throws `IllegalStateException` if no crossing is present.
+- Tests for `Road` covering add/remove crossing lifecycle, null rejection, duplicate-add
+  rejection, and remove-then-re-add round-trip.
+- Tests for `PedestrianCrossing` covering control-type derivation, `isActive` status,
+  and `activate`/`deactivate` toggle behaviour.
+
 - Added layered source packages for application entry-point, simulation engine,
   configuration constants, and model data.
 - Added `TrafficLightSimulationEngine` tests covering engine construction and
