@@ -17,7 +17,7 @@ class PedestrianCrossingTest {
     }
 
     @Test
-    void buttonConstructor_wrapsNullableButtons() {
+    void buttonConstructor_wrapsNullableButtonsAndConnectsButtonsToCrossingLightGroup() {
         PedestrianButton startButton = new PedestrianButton(new TrafficLightGroup());
 
         PedestrianCrossing crossing = new PedestrianCrossing(startButton, null);
@@ -25,6 +25,21 @@ class PedestrianCrossingTest {
         assertTrue(crossing.getButtonAtStart().isPresent());
         assertSame(startButton, crossing.getButtonAtStart().orElseThrow());
         assertTrue(crossing.getButtonAtEnd().isEmpty());
+        assertSame(crossing.getPedestrianLightGroup(), startButton.getPedestrianLightGroup());
+    }
+
+    @Test
+    void buttonConstructor_rejectsButtonAlreadyAttachedToAnotherCrossing() {
+        PedestrianButton sharedButton = new PedestrianButton(new TrafficLightGroup());
+        PedestrianCrossing firstCrossing = new PedestrianCrossing(sharedButton, null);
+        TrafficLightGroup firstCrossingLightGroup = firstCrossing.getPedestrianLightGroup();
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> new PedestrianCrossing(sharedButton, null));
+
+        assertTrue(exception.getMessage().contains("already attached"));
+        assertSame(firstCrossingLightGroup, sharedButton.getPedestrianLightGroup());
+        assertSame(sharedButton, firstCrossing.getButtonAtStart().orElseThrow());
     }
 
     @Test
@@ -41,6 +56,23 @@ class PedestrianCrossingTest {
         startButton.reset();
         endButton.press();
         assertTrue(crossing.isCrossingRequested());
+    }
+
+    @Test
+    void buttonPressTargetsCrossingPedestrianLightGroup() {
+        PedestrianButton startButton = new PedestrianButton(new TrafficLightGroup());
+        PedestrianButton endButton = new PedestrianButton(new TrafficLightGroup());
+        PedestrianCrossing crossing = new PedestrianCrossing(startButton, endButton);
+        TrafficLight pedestrianLight = new TrafficLight(Color.RED, State.ON,
+                TrafficLight.Type.PEDESTRIAN, Direction.NONE, false);
+
+        crossing.addPedestrianLight(pedestrianLight);
+        startButton.press();
+
+        assertTrue(crossing.isCrossingRequested());
+        assertSame(crossing.getPedestrianLightGroup(), startButton.getPedestrianLightGroup());
+        assertSame(crossing.getPedestrianLightGroup(), endButton.getPedestrianLightGroup());
+        assertSame(pedestrianLight, startButton.getPedestrianLightGroup().getLights().get(0));
     }
 
     @Test
