@@ -7,7 +7,7 @@ simulation domain objects.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.1.2-SNAPSHOT`
+- **Current development version:** `0.3.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -46,7 +46,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.1.2-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.3.0-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors
@@ -75,6 +75,21 @@ To resolve it:
    ```sh
    mvn -U -B verify
    ```
+
+
+## Traffic-light safety rules
+
+`TrafficLightGroup` can define incompatible traffic-light pairs that must never
+show active, conflicting signals at the same time. In this model, a light is
+considered active when it is `GREEN` and `ON`. Use `addIncompatibleLights` to
+configure a pair and update managed lights through `setLightColor` or
+`setLightState` so the group can reject unsafe activation attempts with a clear
+`IllegalStateException`.
+
+For lights controlled by different road or pedestrian groups in an
+`Intersection`, call `configureIncompatibleTrafficLights`. The intersection
+locates the owning groups and registers the incompatibility in each affected
+group, so either group prevents simultaneous conflicting green signals.
 
 ## Dependency notes
 

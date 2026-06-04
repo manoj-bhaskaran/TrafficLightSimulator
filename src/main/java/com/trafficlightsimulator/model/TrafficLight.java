@@ -1,6 +1,10 @@
 package com.trafficlightsimulator.model;
 
-// TrafficLight class
+/**
+ * Traffic-light domain object. Instances intentionally use Java object identity
+ * for equality so {@link TrafficLightGroup} incompatibility rules can target
+ * specific physical lights.
+ */
 public class TrafficLight {
     
      public enum Type {

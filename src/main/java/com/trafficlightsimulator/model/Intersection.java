@@ -66,6 +66,41 @@ public class Intersection {
         return pedestrianCrossings;
     }
 
+    // Method to configure two traffic lights in this intersection as mutually incompatible
+    public void configureIncompatibleTrafficLights(TrafficLight firstLight, TrafficLight secondLight) {
+        TrafficLightGroup firstGroup = findTrafficLightGroup(firstLight);
+        TrafficLightGroup secondGroup = findTrafficLightGroup(secondLight);
+
+        if (firstGroup == null || secondGroup == null) {
+            throw new IllegalArgumentException("Both traffic lights must belong to this intersection before incompatibilities can be configured.");
+        }
+
+        firstGroup.addIncompatibleLights(firstLight, secondLight);
+        if (secondGroup != firstGroup) {
+            secondGroup.addIncompatibleLights(secondLight, firstLight);
+        }
+        logger.log(Level.INFO, "Configured incompatible traffic lights for intersection: {0} <-> {1}",
+                new Object[]{firstLight, secondLight});
+    }
+
+    // Method to retrieve all traffic light groups in the intersection
+    public List<TrafficLightGroup> getAllTrafficLightGroups() {
+        List<TrafficLightGroup> trafficLightGroups = new ArrayList<>();
+        for (Road road : roads) {
+            TrafficLightGroup trafficLightGroup = road.getIncomingLanesTrafficLightGroup();
+            if (trafficLightGroup != null) {
+                trafficLightGroups.add(trafficLightGroup);
+            }
+            if (road.hasPedestrianCrossing()) {
+                TrafficLightGroup pedestrianLightGroup = road.getPedestrianCrossing().getPedestrianLightGroup();
+                if (pedestrianLightGroup != null) {
+                    trafficLightGroups.add(pedestrianLightGroup);
+                }
+            }
+        }
+        return trafficLightGroups;
+    }
+
     // Method to initialize all traffic light groups in the intersection
     public void initializeTrafficLightGroups() {
         for (Road road : roads) {
@@ -86,6 +121,18 @@ public class Intersection {
                 logger.log(Level.INFO, "Initialized pedestrian light group for crossing: {0}", crossing);
             }
         }
+    }
+
+    private TrafficLightGroup findTrafficLightGroup(TrafficLight light) {
+        if (light == null) {
+            throw new IllegalArgumentException("Traffic light must not be null.");
+        }
+        for (TrafficLightGroup trafficLightGroup : getAllTrafficLightGroups()) {
+            if (trafficLightGroup.getLights().contains(light)) {
+                return trafficLightGroup;
+            }
+        }
+        return null;
     }
 
     // Method to check if the intersection setup is complete
