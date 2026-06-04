@@ -1,13 +1,13 @@
 # Traffic Light Simulator
 
-Traffic Light Simulator is a Java 17 / JavaFX project for modeling traffic light
+Traffic Light Simulator is a Java 17 project for modeling traffic light
 simulation domain objects.
 
 ## Project metadata
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.1.1-SNAPSHOT`
+- **Current development version:** `0.1.2-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -46,7 +46,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.1.1-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.1.2-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors
@@ -75,6 +75,12 @@ To resolve it:
    ```sh
    mvn -U -B verify
    ```
+
+## Dependency notes
+
+The current simulator entry point uses only standard Java APIs. JavaFX dependencies
+are intentionally not declared until a GUI is added, which keeps Maven dependency
+resolution portable across Linux, macOS, and Windows.
 
 ## Static analysis
 
