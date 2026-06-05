@@ -15,8 +15,16 @@ until a stable `1.0.0` release is declared.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.16.0-SNAPSHOT`
+- **Current development version:** `0.17.0-SNAPSHOT`
 - **Java baseline:** Java 17
+
+## Functional overview
+
+For a plain-language explanation of what the application does and a catalogue of
+the business rules it enforces (intersection layout, road/lane limits, turn
+restrictions, traffic-light safety, and pedestrian crossings), see
+[docs/FUNCTIONAL_OVERVIEW.md](docs/FUNCTIONAL_OVERVIEW.md). It is written for a
+lay reader and does not assume any Java knowledge.
 
 ## Architecture overview
 
@@ -99,7 +107,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.16.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.17.0-SNAPSHOT.jar
 ```
 
 ## Generating API documentation
