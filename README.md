@@ -15,7 +15,7 @@ until a stable `1.0.0` release is declared.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.14.0-SNAPSHOT`
+- **Current development version:** `0.15.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Architecture overview
@@ -30,8 +30,8 @@ com.trafficlightsimulator
 │              TrafficLightGroup, PedestrianCrossing, PedestrianButton,
 │              Color, Direction, State
 ├── engine   – Simulation lifecycle coordination (TrafficLightSimulationEngine)
-└── config   – Validation constants (IntersectionLimits, RoadLimits);
-               future home of builders and factories
+└── config   – Validation constants, compatibility limit facades,
+               and fluent Road/Intersection builders
 ```
 
 **Key design decisions:**
@@ -99,7 +99,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.14.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.15.0-SNAPSHOT.jar
 ```
 
 ## Generating API documentation
@@ -139,6 +139,29 @@ To resolve it:
    mvn -U -B verify
    ```
 
+
+## Fluent builders and validation constants
+
+Use `RoadBuilder` and `IntersectionBuilder` from the `config` package when you
+want construction-time validation with a fluent API. Builders use the shared
+`ValidationConstants` values for road angles, lane counts, road-count bounds, and
+minimum road-angle spacing, so new construction paths and model mutators enforce
+the same limits. The older `RoadLimits` and `IntersectionLimits` classes remain
+as compatibility facades that delegate to `ValidationConstants`.
+
+Example:
+
+```java
+Road north = RoadBuilder.atAngle(0.0)
+        .lanes(2, 2)
+        .build();
+Road east = RoadBuilder.atAngle(90.0).build();
+
+Intersection intersection = IntersectionBuilder.withRoadCapacity(2)
+        .addRoad(north)
+        .addRoad(east)
+        .build();
+```
 
 ## Model collection encapsulation
 

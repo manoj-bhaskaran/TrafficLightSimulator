@@ -1,6 +1,6 @@
 package com.trafficlightsimulator.model;
 
-import com.trafficlightsimulator.config.RoadLimits;
+import com.trafficlightsimulator.config.ValidationConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,12 +44,12 @@ public class Road {
      *
      * @param angle            road angle in degrees, measured clockwise from
      *                         north; must be in
-     *                         [{@link RoadLimits#MIN_ANGLE_DEGREES},
-     *                         {@link RoadLimits#MAX_ANGLE_DEGREES_EXCLUSIVE})
+     *                         [{@link ValidationConstants#MIN_ANGLE_DEGREES},
+     *                         {@link ValidationConstants#MAX_ANGLE_DEGREES_EXCLUSIVE})
      * @param numIncomingLanes number of incoming lanes; must be at least
-     *                         {@link RoadLimits#MIN_LANES}
+     *                         {@link ValidationConstants#MIN_LANES}
      * @param numOutgoingLanes number of outgoing lanes; must be at least
-     *                         {@link RoadLimits#MIN_LANES}
+     *                         {@link ValidationConstants#MIN_LANES}
      * @throws IllegalArgumentException if any argument is out of range
      */
     public Road(double angle, int numIncomingLanes, int numOutgoingLanes) {
@@ -67,8 +67,8 @@ public class Road {
      * Sets the road angle.
      *
      * @param angle angle in degrees; must be in
-     *              [{@link RoadLimits#MIN_ANGLE_DEGREES},
-     *              {@link RoadLimits#MAX_ANGLE_DEGREES_EXCLUSIVE})
+     *              [{@link ValidationConstants#MIN_ANGLE_DEGREES},
+     *              {@link ValidationConstants#MAX_ANGLE_DEGREES_EXCLUSIVE})
      * @throws IllegalArgumentException if the angle is out of range or would
      *                                  violate the minimum road-angle spacing
      *                                  required by the owning intersection
@@ -85,8 +85,8 @@ public class Road {
     /**
      * Returns the road angle in degrees.
      *
-     * @return angle in [{@link RoadLimits#MIN_ANGLE_DEGREES},
-     *         {@link RoadLimits#MAX_ANGLE_DEGREES_EXCLUSIVE})
+     * @return angle in [{@link ValidationConstants#MIN_ANGLE_DEGREES},
+     *         {@link ValidationConstants#MAX_ANGLE_DEGREES_EXCLUSIVE})
      */
     public double getAngle() {
         return angle;
@@ -97,12 +97,12 @@ public class Road {
      * {@link Lane} instances as needed.
      *
      * @param numIncomingLanes desired lane count; must be at least
-     *                         {@link RoadLimits#MIN_LANES}
+     *                         {@link ValidationConstants#MIN_LANES}
      * @throws IllegalArgumentException if the count is less than the minimum
      */
     public void setNumIncomingLanes(int numIncomingLanes) {
-        if (numIncomingLanes < RoadLimits.MIN_LANES) {
-            throw new IllegalArgumentException("Number of incoming lanes must be at least 1.");
+        if (numIncomingLanes < ValidationConstants.MIN_LANES) {
+            throw new IllegalArgumentException("Number of incoming lanes must be at least " + ValidationConstants.MIN_LANES + ".");
         }
         int current = this.incomingLanes.size();
         if (numIncomingLanes > current) {
@@ -130,12 +130,12 @@ public class Road {
      * {@link Lane} instances as needed.
      *
      * @param numOutgoingLanes desired lane count; must be at least
-     *                         {@link RoadLimits#MIN_LANES}
+     *                         {@link ValidationConstants#MIN_LANES}
      * @throws IllegalArgumentException if the count is less than the minimum
      */
     public void setNumOutgoingLanes(int numOutgoingLanes) {
-        if (numOutgoingLanes < RoadLimits.MIN_LANES) {
-            throw new IllegalArgumentException("Number of outgoing lanes must be at least 1.");
+        if (numOutgoingLanes < ValidationConstants.MIN_LANES) {
+            throw new IllegalArgumentException("Number of outgoing lanes must be at least " + ValidationConstants.MIN_LANES + ".");
         }
         int current = this.outgoingLanes.size();
         if (numOutgoingLanes > current) {
@@ -396,8 +396,9 @@ public class Road {
     }
 
     private void validateAngleRange(double angle) {
-        if (angle < RoadLimits.MIN_ANGLE_DEGREES || angle >= RoadLimits.MAX_ANGLE_DEGREES_EXCLUSIVE) {
-            throw new IllegalArgumentException("Angle must be between 0 and 360 degrees.");
+        if (angle < ValidationConstants.MIN_ANGLE_DEGREES || angle >= ValidationConstants.MAX_ANGLE_DEGREES_EXCLUSIVE) {
+            throw new IllegalArgumentException("Angle must be between " + ValidationConstants.MIN_ANGLE_DEGREES
+                    + " and " + ValidationConstants.MAX_ANGLE_DEGREES_EXCLUSIVE + " degrees.");
         }
     }
 

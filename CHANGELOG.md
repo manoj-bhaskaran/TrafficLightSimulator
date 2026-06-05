@@ -14,6 +14,24 @@ the current `0.x` baseline.
 
 ### Added
 
+- `ValidationConstants` as the single source for road-angle, lane-count,
+  intersection road-count, and minimum road-angle-spacing limits.
+- Fluent `RoadBuilder` and `IntersectionBuilder` factories that enforce shared
+  construction validation and cover optional road crossings/lights plus
+  intersection road attachment.
+- Builder unit tests covering valid construction and invalid validation paths.
+- README documentation for the fluent builders and centralized validation
+  constants.
+
+### Changed
+
+- Bumped the pre-MVP development version from `0.14.0-SNAPSHOT` to
+  `0.15.0-SNAPSHOT` for builder/factory construction support.
+- Updated model validation paths to use `ValidationConstants`, while retaining
+  `RoadLimits` and `IntersectionLimits` as compatibility facades.
+
+### Added
+
 - `Intersection.MIN_ANGLE_BETWEEN_ROADS` and centralized intersection angle
   spacing validation that rejects roads configured too close to existing roads,
   including wraparound checks across the `0`/`360` degree boundary.

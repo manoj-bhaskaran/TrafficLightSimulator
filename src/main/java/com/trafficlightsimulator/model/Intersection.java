@@ -1,6 +1,6 @@
 package com.trafficlightsimulator.model;
 
-import com.trafficlightsimulator.config.IntersectionLimits;
+import com.trafficlightsimulator.config.ValidationConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,7 +31,7 @@ public class Intersection {
      * Minimum allowed angular separation, in degrees, between any two roads
      * connected to this intersection.
      */
-    public static final double MIN_ANGLE_BETWEEN_ROADS = IntersectionLimits.MIN_ANGLE_BETWEEN_ROADS;
+    public static final double MIN_ANGLE_BETWEEN_ROADS = ValidationConstants.MIN_ANGLE_BETWEEN_ROADS;
 
     private int numberOfRoads;
     private final List<Road> roads;
@@ -40,8 +40,8 @@ public class Intersection {
      * Creates an intersection with the given road capacity.
      *
      * @param numberOfRoads expected number of roads; must be between
-     *                      {@link IntersectionLimits#MIN_ROADS} and
-     *                      {@link IntersectionLimits#MAX_ROADS} inclusive
+     *                      {@link ValidationConstants#MIN_ROADS} and
+     *                      {@link ValidationConstants#MAX_ROADS} inclusive
      * @throws IllegalArgumentException if {@code numberOfRoads} is out of range
      */
     public Intersection(int numberOfRoads) {
@@ -56,15 +56,15 @@ public class Intersection {
      * and must remain within the allowed range.
      *
      * @param numberOfRoads new capacity; must be between
-     *                      {@link IntersectionLimits#MIN_ROADS} and
-     *                      {@link IntersectionLimits#MAX_ROADS} inclusive, and
+     *                      {@link ValidationConstants#MIN_ROADS} and
+     *                      {@link ValidationConstants#MAX_ROADS} inclusive, and
      *                      must not be less than the roads already added
      * @throws IllegalArgumentException if the value is out of range or would
      *                                  shrink below the current road count
      */
     public void setNumberOfRoads(int numberOfRoads) {
-        if (numberOfRoads < IntersectionLimits.MIN_ROADS || numberOfRoads > IntersectionLimits.MAX_ROADS) {
-            throw new IllegalArgumentException("Number of roads must be between " + IntersectionLimits.MIN_ROADS + " and " + IntersectionLimits.MAX_ROADS);
+        if (numberOfRoads < ValidationConstants.MIN_ROADS || numberOfRoads > ValidationConstants.MAX_ROADS) {
+            throw new IllegalArgumentException("Number of roads must be between " + ValidationConstants.MIN_ROADS + " and " + ValidationConstants.MAX_ROADS);
         }
         if (roads != null && numberOfRoads < roads.size()) {
             throw new IllegalArgumentException(
@@ -290,7 +290,7 @@ public class Intersection {
 
     private double calculateShortestAngleDifference(double firstAngle, double secondAngle) {
         double absoluteDifference = Math.abs(firstAngle - secondAngle);
-        return Math.min(absoluteDifference, 360.0 - absoluteDifference);
+        return Math.min(absoluteDifference, ValidationConstants.MAX_ANGLE_DEGREES_EXCLUSIVE - absoluteDifference);
     }
 
     private TrafficLightGroup findTrafficLightGroup(TrafficLight light) {
