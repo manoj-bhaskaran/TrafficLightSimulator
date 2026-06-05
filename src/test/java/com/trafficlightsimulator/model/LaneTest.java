@@ -120,9 +120,10 @@ class LaneTest {
         Lane existingOutgoing = new Lane(Lane.Direction.OUTGOING);
         Lane invalidIncoming = new Lane(Lane.Direction.INCOMING);
         incoming.addAllowedOutgoingLane(existingOutgoing);
+        List<Lane> invalidOutgoingLanes = List.of(invalidIncoming);
 
         assertThrows(IllegalArgumentException.class,
-                () -> incoming.setAllowedOutgoingLanes(List.of(invalidIncoming)));
+                () -> incoming.setAllowedOutgoingLanes(invalidOutgoingLanes));
 
         assertEquals(1, incoming.getAllowedOutgoingLanes().size());
         assertSame(existingOutgoing, incoming.getAllowedOutgoingLanes().get(0));

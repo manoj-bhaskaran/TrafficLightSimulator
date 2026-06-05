@@ -132,10 +132,10 @@ so each permitted turn appears only once. Before routing traffic, call
 `IllegalStateException`.
 
 `Road` provides road-level helpers for configuring and enforcing the same
-restrictions while ensuring the inbound lane belongs to that road. Use
-`Road.addAllowedTurn`, `Road.setAllowedTurns`, `Road.getAllowedTurns`,
-`Road.isTurnAllowed`, and `Road.validateTurnAllowed` to manage inbound-to-outbound
-movement rules across road lanes.
+restrictions while ensuring the inbound lane and outbound lane both belong to
+that road. Use `Road.addAllowedTurn`, `Road.setAllowedTurns`,
+`Road.getAllowedTurns`, `Road.isTurnAllowed`, and `Road.validateTurnAllowed` to
+manage inbound-to-outbound movement rules across road lanes.
 
 ## Traffic-light safety rules
 

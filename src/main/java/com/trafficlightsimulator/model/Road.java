@@ -219,6 +219,9 @@ public class Road {
         if (outboundLane.getDirection() != Lane.Direction.OUTGOING) {
             throw new IllegalArgumentException("Turn restrictions must target an outbound lane.");
         }
+        if (!outgoingLanes.contains(outboundLane)) {
+            throw new IllegalArgumentException("Outbound lane must belong to this road.");
+        }
     }
 
     // Getter for pedestrian crossing

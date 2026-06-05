@@ -60,6 +60,10 @@ the current `0.x` baseline.
 
 ### Fixed
 
+- Road-level turn restriction helpers now reject outbound lanes that do not
+  belong to the road being configured, preventing cross-road outbound lanes from
+  being stored as allowed turns.
+
 - Reconciled `PedestrianButton` and `PedestrianCrossing` light-group ownership so
   crossings own the pedestrian light group and constructor-supplied buttons are
   connected to that same group without allowing a later crossing to steal an

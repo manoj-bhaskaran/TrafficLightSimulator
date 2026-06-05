@@ -282,17 +282,32 @@ class RoadTest {
     void addAllowedTurn_rejectsInboundLaneFromAnotherRoad() {
         Road road = new Road(0.0, 1, 1);
         Road otherRoad = new Road(90.0, 1, 1);
+        Lane foreignInboundLane = otherRoad.getIncomingLanes().get(0);
+        Lane ownedOutboundLane = road.getOutgoingLanes().get(0);
 
         assertThrows(IllegalArgumentException.class,
-                () -> road.addAllowedTurn(otherRoad.getIncomingLanes().get(0), road.getOutgoingLanes().get(0)));
+                () -> road.addAllowedTurn(foreignInboundLane, ownedOutboundLane));
+    }
+
+    @Test
+    void addAllowedTurn_rejectsOutboundLaneFromAnotherRoad() {
+        Road road = new Road(0.0, 1, 1);
+        Road otherRoad = new Road(90.0, 1, 1);
+        Lane ownedInboundLane = road.getIncomingLanes().get(0);
+        Lane foreignOutboundLane = otherRoad.getOutgoingLanes().get(0);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> road.addAllowedTurn(ownedInboundLane, foreignOutboundLane));
     }
 
     @Test
     void addAllowedTurn_rejectsNonOutboundTarget() {
         Road road = new Road(0.0, 2, 1);
+        Lane ownedInboundLane = road.getIncomingLanes().get(0);
+        Lane nonOutboundLane = road.getIncomingLanes().get(1);
 
         assertThrows(IllegalArgumentException.class,
-                () -> road.addAllowedTurn(road.getIncomingLanes().get(0), road.getIncomingLanes().get(1)));
+                () -> road.addAllowedTurn(ownedInboundLane, nonOutboundLane));
     }
 
     @Test
