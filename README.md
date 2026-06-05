@@ -8,7 +8,7 @@ and configuration concerns.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.11.0-SNAPSHOT`
+- **Current development version:** `0.12.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -64,7 +64,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.11.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.12.0-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors
@@ -168,6 +168,26 @@ views for callers that need to handle crossings without buttons.
 The current simulator entry point uses only standard Java APIs. JavaFX dependencies
 are intentionally not declared until a GUI is added, which keeps Maven dependency
 resolution portable across Linux, macOS, and Windows.
+
+
+## CI/CD workflows
+
+Repository automation uses CI workflows plus GitHub code scanning default setup:
+
+- **CI** (`.github/workflows/ci.yml`) runs `mvn -B verify` on pushes to
+  `main` and on pull requests, including forked pull requests. The build/test job
+  uploads the packaged jar from `target/*.jar` as the
+  `traffic-light-simulator-jar` workflow artifact.
+- **SonarQube Cloud analysis** is a separate CI job that waits for the
+  fork-safe build/test job, skips fork pull requests, and only runs when
+  `SONAR_TOKEN` is available. This keeps external contributor pull requests from
+  failing because repository secrets are unavailable.
+- **CodeQL** is provided by GitHub code scanning default setup for this
+  repository. A custom advanced CodeQL workflow is intentionally not committed,
+  because GitHub rejects advanced-configuration SARIF uploads while default setup
+  is enabled.
+- **Dependency Review** (`.github/workflows/dependency-review.yml`) checks
+  pull-request dependency changes before they merge.
 
 ## Static analysis
 
