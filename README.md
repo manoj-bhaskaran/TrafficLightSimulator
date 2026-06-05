@@ -146,8 +146,10 @@ Use `RoadBuilder` and `IntersectionBuilder` from the `config` package when you
 want construction-time validation with a fluent API. Builders use the shared
 `ValidationConstants` values for road angles, lane counts, road-count bounds, and
 minimum road-angle spacing, so new construction paths and model mutators enforce
-the same limits. The older `RoadLimits` and `IntersectionLimits` classes remain
-as compatibility facades that delegate to `ValidationConstants`.
+the same limits. `IntersectionBuilder.build()` validates configured roads before
+attaching any of them, which keeps failed builds from partially owning roads. The
+older `RoadLimits` and `IntersectionLimits` classes remain as compatibility
+facades that delegate to `ValidationConstants`.
 
 Example:
 

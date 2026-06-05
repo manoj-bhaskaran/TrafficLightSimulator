@@ -11,8 +11,8 @@ import java.util.List;
  * Fluent factory for validated {@link Intersection} instances.
  *
  * <p>Road-count bounds are checked when the capacity is configured, and road
- * capacity plus angle-spacing rules are enforced when {@link #build()} adds the
- * collected roads to the intersection.
+ * capacity plus angle-spacing rules are validated before {@link #build()} adds
+ * any collected road to the intersection.
  */
 public final class IntersectionBuilder {
     private Integer roadCapacity;
@@ -108,13 +108,15 @@ public final class IntersectionBuilder {
      * fully assembled intersection.
      *
      * @return configured intersection
-     * @throws IllegalArgumentException if inferred capacity is out of range or a
-     *                                  road violates intersection validation
+     * @throws IllegalArgumentException if inferred capacity is out of range, a
+     *                                  road is already attached to an intersection,
+     *                                  or configured roads violate angle spacing
      * @throws IllegalStateException    if adding roads exceeds capacity
      */
     public Intersection build() {
         int capacity = roadCapacity != null ? roadCapacity : inferRoadCapacity();
         validateRoadCapacity(capacity);
+        validateRoadsBeforeAttachment();
         Intersection intersection = new Intersection(capacity);
         for (Road road : roads) {
             intersection.addRoad(road);
@@ -134,5 +136,38 @@ public final class IntersectionBuilder {
             throw new IllegalArgumentException("Number of roads must be between "
                     + ValidationConstants.MIN_ROADS + " and " + ValidationConstants.MAX_ROADS);
         }
+    }
+
+    private void validateRoadsBeforeAttachment() {
+        for (Road road : roads) {
+            if (road.isConnectedToIntersection()) {
+                throw new IllegalArgumentException("Road is already connected to an intersection.");
+            }
+        }
+        validateMinimumAngleBetweenConfiguredRoads();
+    }
+
+    private void validateMinimumAngleBetweenConfiguredRoads() {
+        for (int candidateIndex = 0; candidateIndex < roads.size(); candidateIndex++) {
+            Road candidateRoad = roads.get(candidateIndex);
+            for (int existingIndex = 0; existingIndex < candidateIndex; existingIndex++) {
+                Road existingRoad = roads.get(existingIndex);
+                double angleDifference = calculateShortestAngleDifference(candidateRoad.getAngle(),
+                        existingRoad.getAngle());
+                if (angleDifference < ValidationConstants.MIN_ANGLE_BETWEEN_ROADS) {
+                    throw new IllegalArgumentException("Road angle must be at least "
+                            + ValidationConstants.MIN_ANGLE_BETWEEN_ROADS
+                            + " degrees from every existing road. Candidate angle "
+                            + candidateRoad.getAngle() + " is " + angleDifference
+                            + " degrees from existing road angle " + existingRoad.getAngle() + ".");
+                }
+            }
+        }
+    }
+
+    private double calculateShortestAngleDifference(double firstAngle, double secondAngle) {
+        double absoluteDifference = Math.abs(firstAngle - secondAngle);
+        return Math.min(absoluteDifference,
+                ValidationConstants.MAX_ANGLE_DEGREES_EXCLUSIVE - absoluteDifference);
     }
 }

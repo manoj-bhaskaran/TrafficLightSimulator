@@ -30,6 +30,12 @@ the current `0.x` baseline.
 - Updated model validation paths to use `ValidationConstants`, while retaining
   `RoadLimits` and `IntersectionLimits` as compatibility facades.
 
+### Fixed
+
+- `IntersectionBuilder.build()` now prevalidates configured roads before attaching
+  any of them, so failed builds do not leave earlier roads owned by a discarded
+  intersection.
+
 ### Added
 
 - `Intersection.MIN_ANGLE_BETWEEN_ROADS` and centralized intersection angle

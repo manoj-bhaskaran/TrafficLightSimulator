@@ -71,4 +71,52 @@ class IntersectionBuilderTest {
 
         assertTrue(exception.getMessage().contains("at least " + ValidationConstants.MIN_ANGLE_BETWEEN_ROADS));
     }
+
+    @Test
+    void build_enforcesIntersectionAngleValidationWithoutAttachingEarlierRoads() {
+        Road first = RoadBuilder.atAngle(0.0).build();
+        Road tooClose = RoadBuilder.atAngle(ValidationConstants.MIN_ANGLE_BETWEEN_ROADS - 1.0).build();
+        IntersectionBuilder invalidBuilder = IntersectionBuilder.withRoadCapacity(2)
+                .addRoad(first)
+                .addRoad(tooClose);
+
+        assertThrows(IllegalArgumentException.class, invalidBuilder::build);
+
+        Road validReplacement = RoadBuilder.atAngle(90.0).build();
+
+        Intersection intersection = IntersectionBuilder.withRoadCapacity(2)
+                .addRoad(first)
+                .addRoad(validReplacement)
+                .build();
+
+        assertSame(first, intersection.getRoads().get(0));
+        assertSame(validReplacement, intersection.getRoads().get(1));
+        assertTrue(intersection.isIntersectionSetupComplete());
+    }
+
+    @Test
+    void build_rejectsAlreadyAttachedRoadWithoutAttachingEarlierRoads() {
+        Road first = RoadBuilder.atAngle(0.0).build();
+        Road alreadyAttached = RoadBuilder.atAngle(90.0).build();
+        Road attachedPartner = RoadBuilder.atAngle(180.0).build();
+        IntersectionBuilder.withRoadCapacity(2)
+                .addRoad(alreadyAttached)
+                .addRoad(attachedPartner)
+                .build();
+        IntersectionBuilder invalidBuilder = IntersectionBuilder.withRoadCapacity(2)
+                .addRoad(first)
+                .addRoad(alreadyAttached);
+
+        assertThrows(IllegalArgumentException.class, invalidBuilder::build);
+
+        Road validReplacement = RoadBuilder.atAngle(270.0).build();
+
+        Intersection intersection = IntersectionBuilder.withRoadCapacity(2)
+                .addRoad(first)
+                .addRoad(validReplacement)
+                .build();
+
+        assertSame(first, intersection.getRoads().get(0));
+        assertSame(validReplacement, intersection.getRoads().get(1));
+    }
 }

@@ -36,16 +36,20 @@ class RoadBuilderTest {
 
     @Test
     void angle_rejectsOutOfRangeValuesBeforeBuild() {
+        RoadBuilder builder = RoadBuilder.road();
+
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> RoadBuilder.road().angle(ValidationConstants.MAX_ANGLE_DEGREES_EXCLUSIVE));
+                () -> builder.angle(ValidationConstants.MAX_ANGLE_DEGREES_EXCLUSIVE));
 
         assertTrue(exception.getMessage().contains("Angle must be between"));
     }
 
     @Test
     void incomingLanes_rejectsCountsBelowSharedMinimum() {
+        RoadBuilder builder = RoadBuilder.road();
+
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> RoadBuilder.road().incomingLanes(ValidationConstants.MIN_LANES - 1));
+                () -> builder.incomingLanes(ValidationConstants.MIN_LANES - 1));
 
         assertTrue(exception.getMessage().contains(String.valueOf(ValidationConstants.MIN_LANES)));
     }

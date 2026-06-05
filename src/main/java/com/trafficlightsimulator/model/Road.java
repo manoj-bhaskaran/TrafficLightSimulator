@@ -368,6 +368,18 @@ public class Road {
     }
 
     /**
+     * Returns {@code true} if this road is already attached to an intersection.
+     *
+     * <p>This is primarily useful for builders and factories that need to
+     * validate a complete object graph before mutating road ownership.
+     *
+     * @return {@code true} if an intersection currently owns this road
+     */
+    public boolean isConnectedToIntersection() {
+        return intersection != null;
+    }
+
+    /**
      * Logs the lane counts and pedestrian crossing presence for diagnostic
      * purposes.
      */
