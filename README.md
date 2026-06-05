@@ -156,7 +156,10 @@ of roads connected to the same intersection. A candidate road must be at least
 `Intersection.MIN_ANGLE_BETWEEN_ROADS` degrees from each existing road, using the
 shortest circular difference so roads near the `0`/`360` degree boundary are
 validated correctly. Roads that violate the spacing rule are rejected with an
-`IllegalArgumentException` and are not added to the intersection.
+`IllegalArgumentException` and are not added to the intersection. After a road
+is connected to an intersection, `Road.setAngle` also checks the same spacing
+rule before changing the angle, so retained `Road` references cannot move
+connected roads into an invalid intersection layout.
 
 ## Lane turn restrictions
 

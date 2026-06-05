@@ -22,8 +22,8 @@ class TrafficLightSimulationEngineTest {
     @Test
     void initializesRoadTrafficLightGroupsToOff() {
         Intersection intersection = new Intersection(2);
-        Road firstRoad = roadWithTrafficLight(State.ON);
-        Road secondRoad = roadWithTrafficLight(State.BLINKING);
+        Road firstRoad = roadWithTrafficLight(0.0, State.ON);
+        Road secondRoad = roadWithTrafficLight(90.0, State.BLINKING);
         intersection.addRoad(firstRoad);
         intersection.addRoad(secondRoad);
 
@@ -55,8 +55,8 @@ class TrafficLightSimulationEngineTest {
         assertEquals(State.OFF, pedestrianLight.getState());
     }
 
-    private Road roadWithTrafficLight(State initialState) {
-        Road road = new Road(0.0, 1, 1);
+    private Road roadWithTrafficLight(double angle, State initialState) {
+        Road road = new Road(angle, 1, 1);
         road.addTrafficLightToIncomingGroup(new TrafficLight(
                 Color.GREEN,
                 initialState,

@@ -19,6 +19,10 @@ the current `0.x` baseline.
   including wraparound checks across the `0`/`360` degree boundary.
 - Unit coverage for accepted boundary spacing and rejected too-close road angles.
 - README documentation for intersection road-angle validation.
+- Guarding for `Road.setAngle` after a road is connected to an intersection so
+  later angle mutations cannot break minimum road spacing.
+- Rejection for adding the same `Road` instance to an intersection more than
+  once.
 
 ### Changed
 

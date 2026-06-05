@@ -78,8 +78,10 @@ public class Intersection {
      * Adds a road to this intersection.
      *
      * @param road road to add; must not be null
-     * @throws IllegalArgumentException if {@code road} is null or is closer
-     *                                  than {@link #MIN_ANGLE_BETWEEN_ROADS}
+     * @throws IllegalArgumentException if {@code road} is null, is already
+     *                                  connected to an intersection, or is
+     *                                  closer than
+     *                                  {@link #MIN_ANGLE_BETWEEN_ROADS}
      *                                  degrees to an existing road
      * @throws IllegalStateException    if the intersection already contains the
      *                                  declared number of roads
@@ -91,7 +93,14 @@ public class Intersection {
         if (roads.size() >= numberOfRoads) {
             throw new IllegalStateException("Cannot add more roads than the specified number: " + numberOfRoads);
         }
+        if (roads.contains(road)) {
+            throw new IllegalArgumentException("Road is already connected to this intersection.");
+        }
+        if (road.isConnectedToDifferentIntersection(this)) {
+            throw new IllegalArgumentException("Road is already connected to another intersection.");
+        }
         validateMinimumAngleBetweenRoads(road);
+        road.attachToIntersection(this);
         roads.add(road);
         logger.log(Level.FINE, "Added road to intersection. Total roads now: {0}", roads.size());
     }
@@ -251,13 +260,28 @@ public class Intersection {
         }
     }
 
+    void validateRoadAngleChange(Road road, double candidateAngle) {
+        if (!roads.contains(road)) {
+            throw new IllegalArgumentException(
+                    "Road must belong to this intersection before its angle can be validated.");
+        }
+        validateMinimumAngleBetweenRoads(road, candidateAngle);
+    }
+
     private void validateMinimumAngleBetweenRoads(Road candidateRoad) {
+        validateMinimumAngleBetweenRoads(candidateRoad, candidateRoad.getAngle());
+    }
+
+    private void validateMinimumAngleBetweenRoads(Road candidateRoad, double candidateAngle) {
         for (Road existingRoad : roads) {
-            double angleDifference = calculateShortestAngleDifference(candidateRoad.getAngle(),
+            if (existingRoad == candidateRoad) {
+                continue;
+            }
+            double angleDifference = calculateShortestAngleDifference(candidateAngle,
                     existingRoad.getAngle());
             if (angleDifference < MIN_ANGLE_BETWEEN_ROADS) {
                 throw new IllegalArgumentException("Road angle must be at least " + MIN_ANGLE_BETWEEN_ROADS
-                        + " degrees from every existing road. Candidate angle " + candidateRoad.getAngle()
+                        + " degrees from every existing road. Candidate angle " + candidateAngle
                         + " is " + angleDifference + " degrees from existing road angle "
                         + existingRoad.getAngle() + ".");
             }
