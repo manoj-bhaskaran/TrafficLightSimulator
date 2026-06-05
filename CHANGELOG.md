@@ -14,6 +14,22 @@ the current `0.x` baseline.
 
 ### Added
 
+- Javadoc on all public classes and methods across `model`, `engine`, `config`,
+  and `app` packages, covering intent, invariants, parameters, return values,
+  and exceptions thrown.
+- `maven-javadoc-plugin` (version pinned via `maven.javadoc.plugin.version`)
+  configured so `mvn javadoc:javadoc` generates an HTML API reference under
+  `target/site/apidocs/`.
+- Architecture overview, current pre-MVP status note, and Javadoc generation
+  instructions added to `README.md`.
+
+### Removed
+
+- Redundant inline comments that restated what identifiers already express
+  (e.g. `// Getter for angle`, `// Constructor`) replaced by proper Javadoc.
+
+### Added
+
 - Dedicated dependency-review GitHub Actions workflow for pull-request
   dependency-change security coverage.
 - Fork-safe CI jar artifact upload of `target/*.jar` as

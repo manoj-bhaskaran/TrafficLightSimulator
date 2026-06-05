@@ -1,23 +1,42 @@
 package com.trafficlightsimulator.model;
 
 /**
- * Traffic-light domain object. Instances intentionally use Java object identity
- * for equality so {@link TrafficLightGroup} incompatibility rules can target
- * specific physical lights.
+ * A single traffic or pedestrian signal light.
+ *
+ * <p>Instances intentionally rely on Java object identity for equality so that
+ * {@link TrafficLightGroup} incompatibility rules can target specific physical
+ * lights rather than value-equal copies.
  */
 public class TrafficLight {
-    
-     public enum Type {
+
+    /** Distinguishes vehicle-facing signals from pedestrian-facing signals. */
+    public enum Type {
         TRAFFIC,
         PEDESTRIAN
     }
+
     private Color color;
     private State state;
     private final Type type;
     private Direction direction;
     private final boolean isMultiColor;
 
-    // Constructor
+    /**
+     * Creates a traffic light with the supplied initial properties.
+     *
+     * @param color        initial signal colour; must not be null, and must not
+     *                     be {@link Color#AMBER} when {@code type} is
+     *                     {@link Type#PEDESTRIAN}
+     * @param state        initial operational state; must not be null
+     * @param type         signal type (traffic or pedestrian); must not be null
+     * @param direction    directional arrow shown on this light face; must not
+     *                     be null
+     * @param isMultiColor {@code true} if the physical light can display more
+     *                     than one colour
+     * @throws IllegalArgumentException if {@code type} or {@code direction} is
+     *                                  null, or if an {@link Color#AMBER} colour
+     *                                  is supplied for a pedestrian light
+     */
     public TrafficLight(Color color, State state, Type type, Direction direction, boolean isMultiColor) {
         if (type == null) {
             throw new IllegalArgumentException("Traffic light type must not be null.");
@@ -32,11 +51,23 @@ public class TrafficLight {
         setState(state);
     }
 
-    // Getters and Setters
+    /**
+     * Returns the current signal colour.
+     *
+     * @return current colour; never null after construction
+     */
     public Color getColor() {
         return color;
     }
 
+    /**
+     * Changes the signal colour.
+     *
+     * @param color new colour; must not be null, and must not be
+     *              {@link Color#AMBER} for a {@link Type#PEDESTRIAN} light
+     * @throws IllegalArgumentException if {@code color} is null or if AMBER is
+     *                                  supplied for a pedestrian light
+     */
     public void setColor(Color color) {
         if (color == null) {
             throw new IllegalArgumentException("Color must not be null.");
@@ -47,10 +78,21 @@ public class TrafficLight {
         this.color = color;
     }
 
+    /**
+     * Returns the current operational state.
+     *
+     * @return current state; never null after construction
+     */
     public State getState() {
         return state;
     }
 
+    /**
+     * Changes the operational state.
+     *
+     * @param state new state; must not be null
+     * @throws IllegalArgumentException if {@code state} is null
+     */
     public void setState(State state) {
         if (state == null) {
             throw new IllegalArgumentException("State must not be null.");
@@ -58,14 +100,30 @@ public class TrafficLight {
         this.state = state;
     }
 
+    /**
+     * Returns whether this is a vehicle-facing or pedestrian-facing signal.
+     *
+     * @return signal type; never null
+     */
     public Type getType() {
         return type;
     }
 
+    /**
+     * Returns the directional arrow currently shown on this light face.
+     *
+     * @return directional arrow; never null
+     */
     public Direction getDirection() {
         return direction;
     }
 
+    /**
+     * Changes the directional arrow shown on this light face.
+     *
+     * @param direction new direction; must not be null
+     * @throws IllegalArgumentException if {@code direction} is null
+     */
     public void setDirection(Direction direction) {
         if (direction == null) {
             throw new IllegalArgumentException("Direction must not be null.");
@@ -73,6 +131,11 @@ public class TrafficLight {
         this.direction = direction;
     }
 
+    /**
+     * Returns whether the physical light can display more than one colour.
+     *
+     * @return {@code true} if the light is multi-colour
+     */
     public boolean isMultiColor() {
         return isMultiColor;
     }

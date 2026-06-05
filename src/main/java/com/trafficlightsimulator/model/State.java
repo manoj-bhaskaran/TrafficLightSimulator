@@ -1,6 +1,8 @@
 package com.trafficlightsimulator.model;
 
-// Enum for the current state of the light
+/**
+ * Operational state of a traffic or pedestrian light.
+ */
 public enum State {
     ON, OFF, BLINKING, OUT_OF_ORDER
 }
