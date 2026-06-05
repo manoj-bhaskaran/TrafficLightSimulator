@@ -139,4 +139,43 @@ public class TrafficLight {
     public boolean isMultiColor() {
         return isMultiColor;
     }
+
+    /**
+     * Returns a compact diagnostic representation of this light.
+     *
+     * @return readable traffic-light summary
+     */
+    @Override
+    public String toString() {
+        return "TrafficLight{"
+                + "type=" + type
+                + ", color=" + color
+                + ", state=" + state
+                + ", direction=" + direction
+                + ", multiColor=" + isMultiColor
+                + '}';
+    }
+
+    /**
+     * Traffic lights model physical signal heads, so equality is intentionally
+     * based on object identity rather than matching signal properties.
+     *
+     * @param obj object to compare
+     * @return {@code true} only when both references point to the same light
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    /**
+     * Returns an identity-based hash code consistent with {@link #equals(Object)}.
+     *
+     * @return identity hash code
+     */
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
 }

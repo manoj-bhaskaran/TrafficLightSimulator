@@ -80,7 +80,7 @@ public class PedestrianCrossing {
     public void addPedestrianLight(TrafficLight light) {
         if (light != null && light.getType() == TrafficLight.Type.PEDESTRIAN) {
             pedestrianLightGroup.addTrafficLight(light);
-            logger.log(Level.INFO, "Added pedestrian light: {0}", light);
+            logger.log(Level.FINE, "Added pedestrian light: {0}", light);
         }
     }
 
@@ -130,7 +130,7 @@ public class PedestrianCrossing {
     public void activate() {
         pedestrianLightGroup.setAllLightsState(State.ON);
         pedestrianLightGroup.setAllLightsColor(Color.GREEN);
-        logger.log(Level.INFO, "Pedestrian crossing activated.");
+        logger.log(Level.FINE, "Pedestrian crossing activated.");
     }
 
     /**
@@ -140,7 +140,7 @@ public class PedestrianCrossing {
     public void deactivate() {
         pedestrianLightGroup.setAllLightsColor(Color.RED);
         pedestrianLightGroup.setAllLightsState(State.ON);
-        logger.log(Level.INFO, "Pedestrian crossing deactivated.");
+        logger.log(Level.FINE, "Pedestrian crossing deactivated.");
     }
 
     /**
@@ -177,7 +177,7 @@ public class PedestrianCrossing {
      * Logs the light states and button pressed status for diagnostic purposes.
      */
     public void displayCrossingStatus() {
-        logger.log(Level.INFO, "Pedestrian Crossing Status:");
+        logger.log(Level.FINE, "{0}", this);
         pedestrianLightGroup.displayGroupStatus();
         logButtonStatus(buttonAtStart, "Start");
         logButtonStatus(buttonAtEnd, "End");
@@ -196,14 +196,51 @@ public class PedestrianCrossing {
     private void resetButton(PedestrianButton button, String location) {
         if (button != null) {
             button.reset();
-            logger.log(Level.INFO, "Reset button at {0} of crossing.", location);
+            logger.log(Level.FINE, "Reset button at {0} of crossing.", location);
         }
     }
 
     private void logButtonStatus(PedestrianButton button, String location) {
         if (button != null) {
-            logger.log(Level.INFO, "Button at {0}: {1}",
-                    new Object[]{location, button.isPressed() ? "Pressed" : "Not Pressed"});
+            logger.log(Level.FINE, "Button at {0}: {1}", new Object[]{location, button});
         }
     }
+
+    /**
+     * Returns a compact diagnostic representation of this crossing.
+     *
+     * @return readable pedestrian-crossing summary
+     */
+    @Override
+    public String toString() {
+        return "PedestrianCrossing{"
+                + "controlType=" + controlType
+                + ", lightCount=" + pedestrianLightGroup.getLights().size()
+                + ", crossingRequested=" + isCrossingRequested()
+                + ", active=" + isActive()
+                + '}';
+    }
+
+    /**
+     * Pedestrian crossings model physical crossing instances, so equality is
+     * intentionally based on object identity.
+     *
+     * @param obj object to compare
+     * @return {@code true} only when both references point to the same crossing
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    /**
+     * Returns an identity-based hash code consistent with {@link #equals(Object)}.
+     *
+     * @return identity hash code
+     */
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
 }

@@ -86,4 +86,40 @@ public class PedestrianButton {
         this.crossingAttachment = crossingAttachment;
         this.pedestrianLightGroup = pedestrianLightGroup;
     }
+
+    /**
+     * Returns a compact diagnostic representation of this button.
+     *
+     * @return readable pedestrian-button summary
+     */
+    @Override
+    public String toString() {
+        return "PedestrianButton{"
+                + "pressed=" + pressed
+                + ", attached=" + (crossingAttachment != null)
+                + '}';
+    }
+
+    /**
+     * Pedestrian buttons model physical push-button instances, so equality is
+     * intentionally based on object identity.
+     *
+     * @param obj object to compare
+     * @return {@code true} only when both references point to the same button
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    /**
+     * Returns an identity-based hash code consistent with {@link #equals(Object)}.
+     *
+     * @return identity hash code
+     */
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
 }

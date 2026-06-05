@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -316,6 +317,20 @@ class RoadTest {
 
         assertThrows(IndexOutOfBoundsException.class, () -> road.addAllowedTurn(-1, 0));
         assertThrows(IndexOutOfBoundsException.class, () -> road.addAllowedTurn(0, 1));
+    }
+
+
+    @Test
+    void equality_usesIdentityAndToStringIsReadable() {
+        Road road = new Road(90.0, 1, 2);
+        Road sameValueRoad = new Road(90.0, 1, 2);
+
+        assertEquals(road, road);
+        assertNotEquals(road, sameValueRoad);
+        assertEquals(System.identityHashCode(road), road.hashCode());
+        assertTrue(road.toString().contains("angle=90.0"));
+        assertTrue(road.toString().contains("incomingLaneCount=1"));
+        assertFalse(road.toString().contains("@"));
     }
 
 }

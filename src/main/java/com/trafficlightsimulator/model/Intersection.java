@@ -63,7 +63,7 @@ public class Intersection {
                     "Number of roads cannot be less than the number of roads already added: " + roads.size());
         }
         this.numberOfRoads = numberOfRoads;
-        logger.log(Level.INFO, "Number of roads set to: {0}", numberOfRoads);
+        logger.log(Level.FINE, "Number of roads set to: {0}", numberOfRoads);
     }
 
     /**
@@ -82,7 +82,7 @@ public class Intersection {
             throw new IllegalStateException("Cannot add more roads than the specified number: " + numberOfRoads);
         }
         roads.add(road);
-        logger.log(Level.INFO, "Added road to intersection. Total roads now: {0}", roads.size());
+        logger.log(Level.FINE, "Added road to intersection. Total roads now: {0}", roads.size());
     }
 
     /**
@@ -152,7 +152,7 @@ public class Intersection {
         if (secondGroup != firstGroup) {
             secondGroup.addIncompatibleLights(secondLight, firstLight);
         }
-        logger.log(Level.INFO, "Configured incompatible traffic lights for intersection: {0} <-> {1}",
+        logger.log(Level.FINE, "Configured incompatible traffic lights for intersection: {0} <-> {1}",
                 new Object[]{firstLight, secondLight});
     }
 
@@ -189,7 +189,7 @@ public class Intersection {
             TrafficLightGroup lightGroup = road.getIncomingLanesTrafficLightGroup();
             if (lightGroup != null) {
                 lightGroup.setAllLightsState(State.OFF);
-                logger.log(Level.INFO, "Initialized traffic light group for road: {0}", road);
+                logger.log(Level.FINE, "Initialized traffic light group for road: {0}", road);
             }
         }
     }
@@ -204,7 +204,7 @@ public class Intersection {
             TrafficLightGroup pedestrianLightGroup = crossing.getPedestrianLightGroup();
             if (pedestrianLightGroup != null) {
                 pedestrianLightGroup.setAllLightsState(State.OFF);
-                logger.log(Level.INFO, "Initialized pedestrian light group for crossing: {0}", crossing);
+                logger.log(Level.FINE, "Initialized pedestrian light group for crossing: {0}", crossing);
             }
         }
     }
@@ -218,7 +218,7 @@ public class Intersection {
     public boolean isIntersectionSetupComplete() {
         boolean isComplete = roads.size() == numberOfRoads;
         if (isComplete) {
-            logger.log(Level.INFO, "Intersection setup is complete with {0} roads.", roads.size());
+            logger.log(Level.FINE, "Intersection setup is complete with {0} roads.", roads.size());
         } else {
             logger.log(Level.WARNING, "Intersection setup is incomplete. Only {0} of {1} roads added.", new Object[]{roads.size(), numberOfRoads});
         }
@@ -230,13 +230,11 @@ public class Intersection {
      * intersection for diagnostic purposes.
      */
     public void displayIntersectionStatus() {
-        logger.log(Level.INFO, "Intersection Status:");
+        logger.log(Level.FINE, "{0}", this);
         for (Road road : roads) {
-            logger.log(Level.INFO, "Road:");
             road.displayLaneInfo();
 
             if (road.hasPedestrianCrossing()) {
-                logger.log(Level.INFO, "Pedestrian Crossing:");
                 road.getPedestrianCrossing().displayCrossingStatus();
             }
         }
@@ -253,4 +251,41 @@ public class Intersection {
         }
         return null;
     }
+
+    /**
+     * Returns a compact diagnostic representation of this intersection.
+     *
+     * @return readable intersection summary
+     */
+    @Override
+    public String toString() {
+        return "Intersection{"
+                + "configuredRoadCapacity=" + numberOfRoads
+                + ", roadCount=" + roads.size()
+                + ", setupComplete=" + (roads.size() == numberOfRoads)
+                + '}';
+    }
+
+    /**
+     * Intersections model physical junction instances, so equality is
+     * intentionally based on object identity rather than matching road lists.
+     *
+     * @param obj object to compare
+     * @return {@code true} only when both references point to the same intersection
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    /**
+     * Returns an identity-based hash code consistent with {@link #equals(Object)}.
+     *
+     * @return identity hash code
+     */
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
 }

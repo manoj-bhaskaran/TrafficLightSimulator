@@ -156,4 +156,17 @@ class LaneTest {
         assertTrue(exception.getMessage().contains("Illegal turn"));
     }
 
+
+    @Test
+    void equality_usesIdentityAndToStringIsReadable() {
+        Lane lane = new Lane(Lane.Direction.OUTGOING);
+        Lane sameShapeLane = new Lane(Lane.Direction.OUTGOING);
+
+        assertEquals(lane, lane);
+        assertNotEquals(lane, sameShapeLane);
+        assertEquals(System.identityHashCode(lane), lane.hashCode());
+        assertTrue(lane.toString().contains("direction=OUTGOING"));
+        assertFalse(lane.toString().contains("@"));
+    }
+
 }

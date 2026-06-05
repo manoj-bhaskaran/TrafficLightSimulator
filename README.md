@@ -15,7 +15,7 @@ until a stable `1.0.0` release is declared.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.12.0-SNAPSHOT`
+- **Current development version:** `0.13.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Architecture overview
@@ -38,9 +38,10 @@ com.trafficlightsimulator
 
 - Collection getters return read-only views. Structural changes must go
   through typed mutator methods so validation and safety rules stay enforced.
-- `TrafficLight` uses Java object identity for equality. This lets
-  `TrafficLightGroup` incompatibility rules target specific physical lights
-  rather than value-equal copies.
+- Core model entities (`Intersection`, `Road`, `Lane`, `TrafficLight`,
+  `TrafficLightGroup`, `PedestrianCrossing`, and `PedestrianButton`) use
+  Java object identity for equality. This lets simulator relationships target
+  specific physical objects rather than value-equal copies.
 - A light is considered *active* when its colour is `GREEN` and its state
   is `ON`. Incompatibility checks fire only on activation, keeping the model
   simple for non-conflicting state transitions.
@@ -98,7 +99,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.12.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.13.0-SNAPSHOT.jar
 ```
 
 ## Generating API documentation
@@ -155,15 +156,25 @@ Inbound `Lane` instances own the set of outbound lanes they may turn into. Use
 `Lane.addAllowedOutgoingLane` for incremental configuration or
 `Lane.setAllowedOutgoingLanes` to replace an inbound lane's complete restriction
 set. The getter returns a read-only view, and duplicate outbound lanes are ignored
-so each permitted turn appears only once. Before routing traffic, call
-`Lane.validateOutgoingLaneAllowed` to reject illegal turns with a clear
-`IllegalStateException`.
+so each permitted turn appears only once. Lane membership is identity-based: two
+lanes with the same direction are still different physical lanes unless they are
+the same object. Before routing traffic, call `Lane.validateOutgoingLaneAllowed`
+to reject illegal turns with a clear `IllegalStateException`.
 
 `Road` provides road-level helpers for configuring and enforcing the same
 restrictions while ensuring the inbound lane and outbound lane both belong to
 that road. Use `Road.addAllowedTurn`, `Road.setAllowedTurns`,
 `Road.getAllowedTurns`, `Road.isTurnAllowed`, and `Road.validateTurnAllowed` to
 manage inbound-to-outbound movement rules across road lanes.
+
+## Model logging and diagnostics
+
+Routine model mutations such as setter calls, adding lanes/lights, and configuring
+turn or incompatibility relationships log at `FINE` rather than `INFO` so normal
+simulation runs are not noisy by default. Warnings remain reserved for skipped or
+invalid state changes. Each core model entity also provides a concise `toString()`
+summary so diagnostic logs show useful object details instead of JVM identity
+strings.
 
 ## Traffic-light safety rules
 
