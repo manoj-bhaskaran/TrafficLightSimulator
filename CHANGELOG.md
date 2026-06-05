@@ -14,6 +14,16 @@ the current `0.x` baseline.
 
 ### Added
 
+- `Lane.setAllowedOutgoingLanes(Collection<Lane>)` and
+  `Lane.validateOutgoingLaneAllowed(Lane)` to replace inbound-lane turn
+  restrictions atomically and reject illegal outbound turns with clear feedback.
+- `Road` helpers for inbound-to-outbound lane restrictions: `addAllowedTurn`,
+  `setAllowedTurns`, `getAllowedTurns`, `isTurnAllowed`, and
+  `validateTurnAllowed`.
+- Unit tests covering duplicate-safe allowed turns, replacement validation,
+  road-level restriction configuration, valid turn enforcement, and illegal-turn
+  rejection.
+
 - `PedestrianCrossing.ControlType` enum (`BUTTON_CONTROLLED`, `AUTOMATED`) to distinguish
   button-operated crossings from those controlled automatically by the simulation engine.
 - `PedestrianCrossing.getControlType()` to query a crossing's control mode.
@@ -71,6 +81,9 @@ the current `0.x` baseline.
   with `IllegalArgumentException`.
 
 ### Changed
+
+- Incremented the pre-MVP development version from `0.10.0-SNAPSHOT` to
+  `0.11.0-SNAPSHOT` for inbound-to-outbound lane turn restrictions.
 
 - Incremented the pre-MVP development version from `0.8.0-SNAPSHOT` to
   `0.9.0-SNAPSHOT` for the source package layering restructure.
