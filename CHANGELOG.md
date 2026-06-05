@@ -14,6 +14,25 @@ the current `0.x` baseline.
 
 ### Added
 
+- `docs/FUNCTIONAL_OVERVIEW.md`, a lay-reader functional overview that explains
+  what the application does and catalogues the implemented business rules
+  (intersection layout, road/lane limits, turn restrictions, traffic-light
+  safety, pedestrian crossings, and safe simulation start-up).
+- README link to the new functional overview document.
+
+### Fixed
+
+- Clarified in the functional overview that pedestrian crossing requests are not
+  cleared automatically; buttons must be explicitly reset via `resetButtons()`
+  once a request has been served.
+
+### Changed
+
+- Bumped the pre-MVP development version from `0.16.0-SNAPSHOT` to
+  `0.17.0-SNAPSHOT` for the functional overview documentation.
+
+### Added
+
 - Dependabot version-update coverage for the GitHub Actions ecosystem on a
   weekly schedule.
 - Pull request and issue templates for bug reports and enhancement requests.
