@@ -1,8 +1,15 @@
 # Traffic Light Simulator
 
-Traffic Light Simulator is a Java 17 project for modeling traffic light
-simulation domain objects with a layered package structure for model, engine,
-and configuration concerns.
+Traffic Light Simulator is a Java 17 library for modelling traffic-light
+intersection domain objects. It provides a typed, validated model of roads,
+lanes, traffic lights, pedestrian crossings, and safety incompatibility rules,
+with a thin engine layer for simulation lifecycle coordination.
+
+## Current status
+
+The project is **pre-MVP** (versions `0.x.y`). The domain model is under
+active development; minor-version increments may introduce breaking changes
+until a stable `1.0.0` release is declared.
 
 ## Project metadata
 
@@ -10,6 +17,33 @@ and configuration concerns.
 - **Maven artifact ID:** `TrafficLightSimulator`
 - **Current development version:** `0.12.0-SNAPSHOT`
 - **Java baseline:** Java 17
+
+## Architecture overview
+
+The source is organized into four layered packages under
+`com.trafficlightsimulator`:
+
+```
+com.trafficlightsimulator
+├── app      – Runnable entry point (TrafficLightSimulator.main)
+├── model    – Domain objects: Intersection, Road, Lane, TrafficLight,
+│              TrafficLightGroup, PedestrianCrossing, PedestrianButton,
+│              Color, Direction, State
+├── engine   – Simulation lifecycle coordination (TrafficLightSimulationEngine)
+└── config   – Validation constants (IntersectionLimits, RoadLimits);
+               future home of builders and factories
+```
+
+**Key design decisions:**
+
+- Collection getters return read-only views. Structural changes must go
+  through typed mutator methods so validation and safety rules stay enforced.
+- `TrafficLight` uses Java object identity for equality. This lets
+  `TrafficLightGroup` incompatibility rules target specific physical lights
+  rather than value-equal copies.
+- A light is considered *active* when its colour is `GREEN` and its state
+  is `ON`. Incompatibility checks fire only on activation, keeping the model
+  simple for non-conflicting state transitions.
 
 ## Versioning policy
 
@@ -67,6 +101,16 @@ mvn -B package
 java -jar target/TrafficLightSimulator-0.12.0-SNAPSHOT.jar
 ```
 
+## Generating API documentation
+
+Generate the Javadoc HTML site with:
+
+```sh
+mvn javadoc:javadoc
+```
+
+The output is written to `target/site/apidocs/index.html`.
+
 ### Resolving Maven Central 403 errors
 
 If `mvn -B verify` fails while downloading `maven-resources-plugin:3.3.1` with
@@ -94,22 +138,6 @@ To resolve it:
    mvn -U -B verify
    ```
 
-
-## Source package layout
-
-The Java source is organized into layered packages under
-`com.trafficlightsimulator`:
-
-- `app` contains the runnable application entry point.
-- `model` contains domain data objects such as intersections, roads, lanes,
-  traffic lights, pedestrian buttons, and crossings.
-- `engine` contains simulation lifecycle coordination, including traffic-light
-  group initialization and diagnostic display orchestration.
-- `config` contains validation limits and is the home for future builders and
-  factories.
-
-This keeps domain data, simulation behavior, and configuration policy from
-growing into a single package as the simulator expands.
 
 ## Model collection encapsulation
 

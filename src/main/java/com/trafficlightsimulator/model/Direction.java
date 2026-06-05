@@ -1,6 +1,12 @@
 package com.trafficlightsimulator.model;
 
-// Enum for the directional arrow
+/**
+ * Directional arrow shown on a traffic light face.
+ *
+ * <p>Use {@link #NONE} for lights that display no directional arrow.
+ */
 public enum Direction {
-    STRAIGHT, LEFT, RIGHT, NONE // NONE for lights without directional arrows
+    STRAIGHT, LEFT, RIGHT,
+    /** Indicates a light with no directional arrow. */
+    NONE
 }

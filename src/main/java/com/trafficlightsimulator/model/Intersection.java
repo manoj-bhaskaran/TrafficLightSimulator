@@ -8,19 +8,52 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A road intersection that connects two to eight {@link Road} instances.
+ *
+ * <p>The intersection enforces a declared capacity: callers first set the
+ * expected road count and then add roads one by one. Once the intersection
+ * reaches capacity, {@link #isIntersectionSetupComplete()} returns
+ * {@code true} and no additional roads can be added.
+ *
+ * <p>Safety invariants for incompatible traffic lights are registered at the
+ * intersection level through
+ * {@link #configureIncompatibleTrafficLights(TrafficLight, TrafficLight)},
+ * which locates the owning {@link TrafficLightGroup} for each light and
+ * records the mutual incompatibility in both groups.
+ */
 public class Intersection {
     private static final Logger logger = Logger.getLogger(Intersection.class.getName());
-    
+
     private int numberOfRoads;
     private final List<Road> roads;
 
-    // Constructor with road count parameter
+    /**
+     * Creates an intersection with the given road capacity.
+     *
+     * @param numberOfRoads expected number of roads; must be between
+     *                      {@link IntersectionLimits#MIN_ROADS} and
+     *                      {@link IntersectionLimits#MAX_ROADS} inclusive
+     * @throws IllegalArgumentException if {@code numberOfRoads} is out of range
+     */
     public Intersection(int numberOfRoads) {
         this.roads = new ArrayList<>();
         setNumberOfRoads(numberOfRoads);
     }
 
-    // Method to set the number of roads in the intersection with validation
+    /**
+     * Updates the declared road capacity for this intersection.
+     *
+     * <p>The new value must not be less than the number of roads already added,
+     * and must remain within the allowed range.
+     *
+     * @param numberOfRoads new capacity; must be between
+     *                      {@link IntersectionLimits#MIN_ROADS} and
+     *                      {@link IntersectionLimits#MAX_ROADS} inclusive, and
+     *                      must not be less than the roads already added
+     * @throws IllegalArgumentException if the value is out of range or would
+     *                                  shrink below the current road count
+     */
     public void setNumberOfRoads(int numberOfRoads) {
         if (numberOfRoads < IntersectionLimits.MIN_ROADS || numberOfRoads > IntersectionLimits.MAX_ROADS) {
             throw new IllegalArgumentException("Number of roads must be between " + IntersectionLimits.MIN_ROADS + " and " + IntersectionLimits.MAX_ROADS);
@@ -33,7 +66,14 @@ public class Intersection {
         logger.log(Level.INFO, "Number of roads set to: {0}", numberOfRoads);
     }
 
-    // Method to add a road to the intersection with validation
+    /**
+     * Adds a road to this intersection.
+     *
+     * @param road road to add; must not be null
+     * @throws IllegalArgumentException if {@code road} is null
+     * @throws IllegalStateException    if the intersection already contains the
+     *                                  declared number of roads
+     */
     public void addRoad(Road road) {
         if (road == null) {
             throw new IllegalArgumentException("Road cannot be null");
@@ -45,12 +85,21 @@ public class Intersection {
         logger.log(Level.INFO, "Added road to intersection. Total roads now: {0}", roads.size());
     }
 
-    // Method to retrieve all roads in the intersection
+    /**
+     * Returns a read-only view of all roads in this intersection.
+     *
+     * @return unmodifiable list of roads; never null
+     */
     public List<Road> getRoads() {
         return Collections.unmodifiableList(roads);
     }
 
-    // Method to retrieve all lanes in the intersection (both incoming and outgoing)
+    /**
+     * Returns all lanes across every road in this intersection, incoming and
+     * outgoing combined.
+     *
+     * @return new mutable list containing all lanes; never null
+     */
     public List<Lane> getAllLanes() {
         List<Lane> allLanes = new ArrayList<>();
         for (Road road : roads) {
@@ -60,7 +109,11 @@ public class Intersection {
         return allLanes;
     }
 
-    // Method to retrieve all pedestrian crossings in the intersection
+    /**
+     * Returns all pedestrian crossings attached to roads in this intersection.
+     *
+     * @return new mutable list of crossings; never null
+     */
     public List<PedestrianCrossing> getAllPedestrianCrossings() {
         List<PedestrianCrossing> pedestrianCrossings = new ArrayList<>();
         for (Road road : roads) {
@@ -71,7 +124,22 @@ public class Intersection {
         return pedestrianCrossings;
     }
 
-    // Method to configure two traffic lights in this intersection as mutually incompatible
+    /**
+     * Registers two traffic lights in this intersection as mutually
+     * incompatible so neither can be set to GREEN+ON while the other is
+     * already active.
+     *
+     * <p>Both lights must already belong to a group managed by this
+     * intersection. The incompatibility is recorded in each light's owning
+     * group, so activation checks in either group will catch the conflict.
+     *
+     * @param firstLight  first light in the incompatible pair; must not be null
+     *                    and must belong to this intersection
+     * @param secondLight second light in the incompatible pair; must not be
+     *                    null and must belong to this intersection
+     * @throws IllegalArgumentException if either light is null or does not
+     *                                  belong to this intersection
+     */
     public void configureIncompatibleTrafficLights(TrafficLight firstLight, TrafficLight secondLight) {
         TrafficLightGroup firstGroup = findTrafficLightGroup(firstLight);
         TrafficLightGroup secondGroup = findTrafficLightGroup(secondLight);
@@ -88,7 +156,12 @@ public class Intersection {
                 new Object[]{firstLight, secondLight});
     }
 
-    // Method to retrieve all traffic light groups in the intersection
+    /**
+     * Returns all {@link TrafficLightGroup} instances managed by this
+     * intersection, covering both vehicle and pedestrian signals.
+     *
+     * @return new mutable list of groups; never null
+     */
     public List<TrafficLightGroup> getAllTrafficLightGroups() {
         List<TrafficLightGroup> trafficLightGroups = new ArrayList<>();
         for (Road road : roads) {
@@ -106,24 +179,65 @@ public class Intersection {
         return trafficLightGroups;
     }
 
-    // Method to initialize all traffic light groups in the intersection
+    /**
+     * Sets all vehicle traffic-light groups across every road to the
+     * {@link State#OFF} state, establishing a safe initial condition before
+     * the simulation begins.
+     */
     public void initializeTrafficLightGroups() {
         for (Road road : roads) {
             TrafficLightGroup lightGroup = road.getIncomingLanesTrafficLightGroup();
             if (lightGroup != null) {
-                lightGroup.setAllLightsState(State.OFF);  // Example default state
+                lightGroup.setAllLightsState(State.OFF);
                 logger.log(Level.INFO, "Initialized traffic light group for road: {0}", road);
             }
         }
     }
 
-    // Method to initialize all pedestrian light groups in the intersection
+    /**
+     * Sets all pedestrian traffic-light groups across every crossing to the
+     * {@link State#OFF} state, establishing a safe initial condition before
+     * the simulation begins.
+     */
     public void initializePedestrianLightGroups() {
         for (PedestrianCrossing crossing : getAllPedestrianCrossings()) {
             TrafficLightGroup pedestrianLightGroup = crossing.getPedestrianLightGroup();
             if (pedestrianLightGroup != null) {
-                pedestrianLightGroup.setAllLightsState(State.OFF);  // Example default state
+                pedestrianLightGroup.setAllLightsState(State.OFF);
                 logger.log(Level.INFO, "Initialized pedestrian light group for crossing: {0}", crossing);
+            }
+        }
+    }
+
+    /**
+     * Returns {@code true} when the number of roads added equals the declared
+     * road capacity.
+     *
+     * @return {@code true} if setup is complete
+     */
+    public boolean isIntersectionSetupComplete() {
+        boolean isComplete = roads.size() == numberOfRoads;
+        if (isComplete) {
+            logger.log(Level.INFO, "Intersection setup is complete with {0} roads.", roads.size());
+        } else {
+            logger.log(Level.WARNING, "Intersection setup is incomplete. Only {0} of {1} roads added.", new Object[]{roads.size(), numberOfRoads});
+        }
+        return isComplete;
+    }
+
+    /**
+     * Logs the current status of every road and pedestrian crossing in this
+     * intersection for diagnostic purposes.
+     */
+    public void displayIntersectionStatus() {
+        logger.log(Level.INFO, "Intersection Status:");
+        for (Road road : roads) {
+            logger.log(Level.INFO, "Road:");
+            road.displayLaneInfo();
+
+            if (road.hasPedestrianCrossing()) {
+                logger.log(Level.INFO, "Pedestrian Crossing:");
+                road.getPedestrianCrossing().displayCrossingStatus();
             }
         }
     }
@@ -138,30 +252,5 @@ public class Intersection {
             }
         }
         return null;
-    }
-
-    // Method to check if the intersection setup is complete
-    public boolean isIntersectionSetupComplete() {
-        boolean isComplete = roads.size() == numberOfRoads;
-        if (isComplete) {
-            logger.log(Level.INFO, "Intersection setup is complete with {0} roads.", roads.size());
-        } else {
-            logger.log(Level.WARNING, "Intersection setup is incomplete. Only {0} of {1} roads added.", new Object[]{roads.size(), numberOfRoads});
-        }
-        return isComplete;
-    }
-
-    // Method to display the status of the intersection (for debugging purposes)
-    public void displayIntersectionStatus() {
-        logger.log(Level.INFO, "Intersection Status:");
-        for (Road road : roads) {
-            logger.log(Level.INFO, "Road:");
-            road.displayLaneInfo();
-
-            if (road.hasPedestrianCrossing()) {
-                logger.log(Level.INFO, "Pedestrian Crossing:");
-                road.getPedestrianCrossing().displayCrossingStatus();
-            }
-        }
     }
 }

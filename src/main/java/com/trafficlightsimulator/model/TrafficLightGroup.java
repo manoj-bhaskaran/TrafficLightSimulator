@@ -9,18 +9,42 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A group of {@link TrafficLight} instances that are controlled together and
+ * share safety incompatibility rules.
+ *
+ * <p>Lights are compared by identity (not by value) throughout, which allows
+ * the same value-equal light configuration to appear at multiple physical
+ * locations without unintended interference.
+ *
+ * <p><strong>Incompatibility rules.</strong> Pairs of lights can be declared
+ * mutually incompatible via {@link #addIncompatibleLights(TrafficLight, TrafficLight)}.
+ * A light is considered active when its colour is {@link Color#GREEN} and its
+ * state is {@link State#ON}. Whenever a managed light is about to be activated
+ * through {@link #setLightColor(TrafficLight, Color)} or
+ * {@link #setLightState(TrafficLight, State)}, the group checks all registered
+ * incompatibilities and throws {@link IllegalStateException} if a conflicting
+ * light is already active.
+ */
 public class TrafficLightGroup {
     private static final Logger logger = Logger.getLogger(TrafficLightGroup.class.getName());
     private final List<TrafficLight> lights;
     private final Map<TrafficLight, Set<TrafficLight>> incompatibleLights;
 
-    // Constructor
+    /**
+     * Creates an empty traffic-light group with no lights and no
+     * incompatibility rules.
+     */
     public TrafficLightGroup() {
         this.lights = new ArrayList<>();
         this.incompatibleLights = new IdentityHashMap<>();
     }
 
-    // Method to add a traffic light to the group
+    /**
+     * Adds a light to this group. Null values are silently ignored.
+     *
+     * @param light light to add; ignored if null
+     */
     public void addTrafficLight(TrafficLight light) {
         if (light != null) {
             lights.add(light);
@@ -29,7 +53,12 @@ public class TrafficLightGroup {
         }
     }
 
-    // Method to remove a traffic light from the group
+    /**
+     * Removes a light from this group and clears any incompatibility rules
+     * that reference it.
+     *
+     * @param light light to remove; no-op if null or not in this group
+     */
     public void removeTrafficLight(TrafficLight light) {
         lights.remove(light);
         incompatibleLights.remove(light);
@@ -39,7 +68,20 @@ public class TrafficLightGroup {
         logger.log(Level.INFO, "Traffic light removed: {0}", light);
     }
 
-    // Method to configure two lights that cannot be active at the same time
+    /**
+     * Declares two lights as mutually incompatible. Neither light may be
+     * activated while the other is already active.
+     *
+     * <p>The lights do not need to be members of this group at the time of
+     * registration; membership is only required when activating via
+     * {@link #setLightColor} or {@link #setLightState}.
+     *
+     * @param firstLight  first light in the pair; must not be null
+     * @param secondLight second light in the pair; must not be null and must
+     *                    not be the same object as {@code firstLight}
+     * @throws IllegalArgumentException if either argument is null, or if both
+     *                                  arguments refer to the same object
+     */
     public void addIncompatibleLights(TrafficLight firstLight, TrafficLight secondLight) {
         validateIncompatibilityPair(firstLight, secondLight);
         incompatibleLights.computeIfAbsent(firstLight, ignored -> newIdentitySet()).add(secondLight);
@@ -48,7 +90,13 @@ public class TrafficLightGroup {
                 new Object[]{firstLight, secondLight});
     }
 
-    // Method to remove a configured incompatibility between two lights
+    /**
+     * Removes a previously declared incompatibility between two lights.
+     *
+     * @param firstLight  first light in the pair; must not be null
+     * @param secondLight second light in the pair; must not be null
+     * @throws IllegalArgumentException if either argument is null
+     */
     public void removeIncompatibleLights(TrafficLight firstLight, TrafficLight secondLight) {
         if (firstLight == null || secondLight == null) {
             throw new IllegalArgumentException("Incompatible lights must not be null.");
@@ -59,7 +107,14 @@ public class TrafficLightGroup {
                 new Object[]{firstLight, secondLight});
     }
 
-    // Method to check if two lights have been configured as incompatible
+    /**
+     * Returns {@code true} if the two lights have been declared incompatible
+     * in this group.
+     *
+     * @param firstLight  first light; null returns {@code false}
+     * @param secondLight second light; null returns {@code false}
+     * @return {@code true} if a mutual incompatibility is registered
+     */
     public boolean areIncompatible(TrafficLight firstLight, TrafficLight secondLight) {
         if (firstLight == null || secondLight == null) {
             return false;
@@ -67,7 +122,14 @@ public class TrafficLightGroup {
         return incompatibleLights.getOrDefault(firstLight, Collections.emptySet()).contains(secondLight);
     }
 
-    // Method to retrieve lights that are incompatible with the given light
+    /**
+     * Returns a read-only view of the lights declared incompatible with the
+     * given light in this group.
+     *
+     * @param light light to query; must not be null
+     * @return unmodifiable set of incompatible lights; never null
+     * @throws IllegalArgumentException if {@code light} is null
+     */
     public Set<TrafficLight> getIncompatibleLights(TrafficLight light) {
         if (light == null) {
             throw new IllegalArgumentException("Traffic light must not be null.");
@@ -75,7 +137,20 @@ public class TrafficLightGroup {
         return Collections.unmodifiableSet(incompatibleLights.getOrDefault(light, Collections.emptySet()));
     }
 
-    // Method to set one light to a specified color with safety checks
+    /**
+     * Changes the colour of a managed light, first verifying that the change
+     * does not activate a light that is incompatible with an already-active
+     * light.
+     *
+     * @param light light to update; must not be null and must belong to this
+     *              group
+     * @param color new colour; must be valid for the light's type
+     * @throws IllegalArgumentException if {@code light} is null, does not
+     *                                  belong to this group, or if
+     *                                  {@code color} is invalid for the type
+     * @throws IllegalStateException    if applying the colour would activate
+     *                                  an incompatible light pair
+     */
     public void setLightColor(TrafficLight light, Color color) {
         validateManagedLight(light);
         ensureCompatibleActivation(light, color, light.getState());
@@ -83,7 +158,20 @@ public class TrafficLightGroup {
         logger.log(Level.INFO, "Set color {0} for light: {1}", new Object[]{color, light});
     }
 
-    // Method to set one light to a specified state with safety checks
+    /**
+     * Changes the state of a managed light, first verifying that the change
+     * does not activate a light that is incompatible with an already-active
+     * light.
+     *
+     * @param light light to update; must not be null and must belong to this
+     *              group
+     * @param state new state; must not be null
+     * @throws IllegalArgumentException if {@code light} is null, does not
+     *                                  belong to this group, or if
+     *                                  {@code state} is null
+     * @throws IllegalStateException    if applying the state would activate an
+     *                                  incompatible light pair
+     */
     public void setLightState(TrafficLight light, State state) {
         validateManagedLight(light);
         ensureCompatibleActivation(light, light.getColor(), state);
@@ -91,7 +179,13 @@ public class TrafficLightGroup {
         logger.log(Level.INFO, "Set state {0} for light: {1}", new Object[]{state, light});
     }
 
-    // Method to set all lights in the group to a specified color (if they support color change)
+    /**
+     * Sets every light in this group to the specified colour. Lights that
+     * cannot accept the colour (e.g. AMBER on a pedestrian light, or an
+     * incompatibility violation) are skipped with a warning log.
+     *
+     * @param color colour to apply to all lights
+     */
     public void setAllLightsColor(Color color) {
         for (TrafficLight light : lights) {
             try {
@@ -102,7 +196,13 @@ public class TrafficLightGroup {
         }
     }
 
-    // Method to set all lights in the group to a specified state
+    /**
+     * Sets every light in this group to the specified state. Lights that
+     * cannot accept the state (e.g. due to an incompatibility violation) are
+     * skipped with a warning log.
+     *
+     * @param state state to apply to all lights
+     */
     public void setAllLightsState(State state) {
         for (TrafficLight light : lights) {
             try {
@@ -113,12 +213,19 @@ public class TrafficLightGroup {
         }
     }
 
-    // Getter for the list of traffic lights
+    /**
+     * Returns a read-only view of all lights in this group.
+     *
+     * @return unmodifiable list of lights; never null
+     */
     public List<TrafficLight> getLights() {
         return Collections.unmodifiableList(lights);
     }
 
-    // Method to display the current state of each light in the group (for debugging)
+    /**
+     * Logs the type, colour, and state of every light in this group for
+     * diagnostic purposes.
+     */
     public void displayGroupStatus() {
         for (TrafficLight light : lights) {
             logger.log(Level.INFO, "Light Type: {0}, Color: {1}, State: {2}",

@@ -4,11 +4,30 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * A pedestrian crossing associated with a {@link Road}.
+ *
+ * <p>A crossing owns the {@link TrafficLightGroup} that controls its
+ * pedestrian signals and manages zero, one, or two {@link PedestrianButton}
+ * instances positioned at each end. When constructed with at least one
+ * button, the crossing connects those buttons to its owned light group and is
+ * classified as {@link ControlType#BUTTON_CONTROLLED}; a no-argument
+ * constructor creates an {@link ControlType#AUTOMATED} crossing.
+ *
+ * <p>The {@link #activate()} and {@link #deactivate()} methods grant or
+ * revoke the pedestrian right of way by setting all lights in the owned group
+ * to GREEN+ON or RED+ON respectively.
+ */
 public class PedestrianCrossing {
     private static final Logger logger = Logger.getLogger(PedestrianCrossing.class.getName());
 
+    /**
+     * Distinguishes how a crossing receives its activation signal.
+     */
     public enum ControlType {
+        /** Crossing activates when a {@link PedestrianButton} is pressed. */
         BUTTON_CONTROLLED,
+        /** Crossing activation is driven entirely by the simulation engine. */
         AUTOMATED
     }
 
@@ -18,12 +37,28 @@ public class PedestrianCrossing {
     private PedestrianButton buttonAtStart;
     private PedestrianButton buttonAtEnd;
 
-    // Constructor without buttons — creates an automated crossing
+    /**
+     * Creates an automated pedestrian crossing with no buttons.
+     */
     public PedestrianCrossing() {
         this(null, null);
     }
 
-    // Constructor with buttons at both ends — creates a button-controlled crossing
+    /**
+     * Creates a pedestrian crossing, optionally with buttons at each end.
+     *
+     * <p>If at least one button is non-null the crossing is classified as
+     * {@link ControlType#BUTTON_CONTROLLED}; otherwise it is
+     * {@link ControlType#AUTOMATED}. Each non-null button is bound to this
+     * crossing's owned light group.
+     *
+     * @param buttonAtStart button at the start of the crossing, or null if
+     *                      absent
+     * @param buttonAtEnd   button at the end of the crossing, or null if
+     *                      absent
+     * @throws IllegalArgumentException if a button is already attached to a
+     *                                  different crossing
+     */
     public PedestrianCrossing(PedestrianButton buttonAtStart, PedestrianButton buttonAtEnd) {
         this.pedestrianLightGroup = new TrafficLightGroup();
         this.buttonAttachment = new Object();
@@ -35,7 +70,13 @@ public class PedestrianCrossing {
         connectButton(buttonAtEnd);
     }
 
-    // Method to initialize the pedestrian light group
+    /**
+     * Adds a pedestrian signal light to this crossing's light group. Null
+     * values and non-pedestrian lights are silently ignored.
+     *
+     * @param light pedestrian light to add; ignored if null or not
+     *              {@link TrafficLight.Type#PEDESTRIAN}
+     */
     public void addPedestrianLight(TrafficLight light) {
         if (light != null && light.getType() == TrafficLight.Type.PEDESTRIAN) {
             pedestrianLightGroup.addTrafficLight(light);
@@ -43,58 +84,98 @@ public class PedestrianCrossing {
         }
     }
 
-    // Method to check if either button has been pressed
+    /**
+     * Returns {@code true} if at least one button has been pressed and not
+     * yet reset.
+     *
+     * @return {@code true} if a crossing has been requested
+     */
     public boolean isCrossingRequested() {
         return isButtonPressed(buttonAtStart) || isButtonPressed(buttonAtEnd);
     }
 
-    // Method to reset buttons after the crossing has been completed
+    /**
+     * Resets the pressed state of all buttons after the crossing has been
+     * completed.
+     */
     public void resetButtons() {
         resetButton(buttonAtStart, "start");
         resetButton(buttonAtEnd, "end");
     }
 
-    // Getter for the control type of this crossing
+    /**
+     * Returns how this crossing receives its activation signal.
+     *
+     * @return control type; never null
+     */
     public ControlType getControlType() {
         return controlType;
     }
 
-    // Returns true if at least one pedestrian light in this crossing is currently active (GREEN + ON)
+    /**
+     * Returns {@code true} if at least one pedestrian light in this crossing
+     * is currently GREEN and ON.
+     *
+     * @return {@code true} if the crossing is active
+     */
     public boolean isActive() {
         return pedestrianLightGroup.getLights().stream()
                 .anyMatch(l -> l.getColor() == Color.GREEN && l.getState() == State.ON);
     }
 
-    // Sets all pedestrian lights to GREEN and ON (grants pedestrians the right to cross)
+    /**
+     * Grants pedestrians the right of way by setting all lights in this
+     * crossing's group to GREEN and ON.
+     */
     public void activate() {
         pedestrianLightGroup.setAllLightsState(State.ON);
         pedestrianLightGroup.setAllLightsColor(Color.GREEN);
         logger.log(Level.INFO, "Pedestrian crossing activated.");
     }
 
-    // Sets all pedestrian lights to RED (stops pedestrian crossing)
+    /**
+     * Revokes the pedestrian right of way by setting all lights in this
+     * crossing's group to RED and ON.
+     */
     public void deactivate() {
         pedestrianLightGroup.setAllLightsColor(Color.RED);
         pedestrianLightGroup.setAllLightsState(State.ON);
         logger.log(Level.INFO, "Pedestrian crossing deactivated.");
     }
 
-    // Getter for the pedestrian light group
+    /**
+     * Returns the {@link TrafficLightGroup} that controls all pedestrian
+     * signals at this crossing.
+     *
+     * @return pedestrian light group; never null
+     */
     public TrafficLightGroup getPedestrianLightGroup() {
         return pedestrianLightGroup;
     }
 
-    // Getter for the button at the start of the crossing
+    /**
+     * Returns the button at the start of this crossing, if present.
+     *
+     * @return an {@link Optional} containing the start button, or empty if
+     *         this crossing has no start button
+     */
     public Optional<PedestrianButton> getButtonAtStart() {
         return Optional.ofNullable(buttonAtStart);
     }
 
-    // Getter for the button at the end of the crossing
+    /**
+     * Returns the button at the end of this crossing, if present.
+     *
+     * @return an {@link Optional} containing the end button, or empty if this
+     *         crossing has no end button
+     */
     public Optional<PedestrianButton> getButtonAtEnd() {
         return Optional.ofNullable(buttonAtEnd);
     }
 
-    // Method to display the status of the pedestrian crossing (for debugging)
+    /**
+     * Logs the light states and button pressed status for diagnostic purposes.
+     */
     public void displayCrossingStatus() {
         logger.log(Level.INFO, "Pedestrian Crossing Status:");
         pedestrianLightGroup.displayGroupStatus();
