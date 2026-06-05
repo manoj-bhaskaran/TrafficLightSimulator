@@ -3,6 +3,7 @@ package com.trafficlightsimulator.model;
 import com.trafficlightsimulator.config.RoadLimits;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -135,6 +136,92 @@ public class Road {
     // Getter for outgoing lanes
     public List<Lane> getOutgoingLanes() {
         return Collections.unmodifiableList(outgoingLanes);
+    }
+
+
+    // Associate one inbound lane with an allowable outbound lane.
+    public void addAllowedTurn(Lane inboundLane, Lane outboundLane) {
+        validateInboundLaneMembership(inboundLane);
+        validateOutboundLane(outboundLane);
+        inboundLane.addAllowedOutgoingLane(outboundLane);
+        logger.log(Level.INFO, "Allowed turn configured from inbound lane {0} to outbound lane {1}",
+                new Object[] { inboundLane, outboundLane });
+    }
+
+    // Replace all allowable outbound lanes for an inbound lane.
+    public void setAllowedTurns(Lane inboundLane, Collection<Lane> outboundLanes) {
+        validateInboundLaneMembership(inboundLane);
+        if (outboundLanes == null) {
+            throw new IllegalArgumentException("Allowed outbound lanes must not be null.");
+        }
+        for (Lane outboundLane : outboundLanes) {
+            validateOutboundLane(outboundLane);
+        }
+        inboundLane.setAllowedOutgoingLanes(outboundLanes);
+        logger.log(Level.INFO, "Allowed turns replaced for inbound lane {0}", inboundLane);
+    }
+
+    // Associate one inbound lane index with one of this road's outbound lane indexes.
+    public void addAllowedTurn(int inboundLaneIndex, int outboundLaneIndex) {
+        addAllowedTurn(getIncomingLaneAt(inboundLaneIndex), getOutgoingLaneAt(outboundLaneIndex));
+    }
+
+    // Retrieve allowable outbound lanes for a road-owned inbound lane.
+    public List<Lane> getAllowedTurns(Lane inboundLane) {
+        validateInboundLaneMembership(inboundLane);
+        return inboundLane.getAllowedOutgoingLanes();
+    }
+
+    // Check whether the configured restrictions permit a turn.
+    public boolean isTurnAllowed(Lane inboundLane, Lane outboundLane) {
+        validateInboundLaneMembership(inboundLane);
+        validateOutboundLane(outboundLane);
+        return inboundLane.isAllowedOutgoingLane(outboundLane);
+    }
+
+    // Enforce configured restrictions before routing traffic to an outbound lane.
+    public void validateTurnAllowed(Lane inboundLane, Lane outboundLane) {
+        validateInboundLaneMembership(inboundLane);
+        validateOutboundLane(outboundLane);
+        inboundLane.validateOutgoingLaneAllowed(outboundLane);
+    }
+
+    private Lane getIncomingLaneAt(int inboundLaneIndex) {
+        if (inboundLaneIndex < 0 || inboundLaneIndex >= incomingLanes.size()) {
+            throw new IndexOutOfBoundsException("Inbound lane index is outside this road's incoming lane range.");
+        }
+        return incomingLanes.get(inboundLaneIndex);
+    }
+
+    private Lane getOutgoingLaneAt(int outboundLaneIndex) {
+        if (outboundLaneIndex < 0 || outboundLaneIndex >= outgoingLanes.size()) {
+            throw new IndexOutOfBoundsException("Outbound lane index is outside this road's outgoing lane range.");
+        }
+        return outgoingLanes.get(outboundLaneIndex);
+    }
+
+    private void validateInboundLaneMembership(Lane inboundLane) {
+        if (inboundLane == null) {
+            throw new IllegalArgumentException("Inbound lane must not be null.");
+        }
+        if (inboundLane.getDirection() != Lane.Direction.INCOMING) {
+            throw new IllegalArgumentException("Turn restrictions must start from an inbound lane.");
+        }
+        if (!incomingLanes.contains(inboundLane)) {
+            throw new IllegalArgumentException("Inbound lane must belong to this road.");
+        }
+    }
+
+    private void validateOutboundLane(Lane outboundLane) {
+        if (outboundLane == null) {
+            throw new IllegalArgumentException("Outbound lane must not be null.");
+        }
+        if (outboundLane.getDirection() != Lane.Direction.OUTGOING) {
+            throw new IllegalArgumentException("Turn restrictions must target an outbound lane.");
+        }
+        if (!outgoingLanes.contains(outboundLane)) {
+            throw new IllegalArgumentException("Outbound lane must belong to this road.");
+        }
     }
 
     // Getter for pedestrian crossing

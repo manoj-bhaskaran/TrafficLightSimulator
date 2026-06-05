@@ -8,7 +8,7 @@ and configuration concerns.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.9.0-SNAPSHOT`
+- **Current development version:** `0.11.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Versioning policy
@@ -64,7 +64,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.9.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.11.0-SNAPSHOT.jar
 ```
 
 ### Resolving Maven Central 403 errors
@@ -119,6 +119,23 @@ routes through getters, but structural changes must go through the model methods
 such as `Intersection.addRoad`, `Road.setNumIncomingLanes`,
 `Road.setNumOutgoingLanes`, `TrafficLightGroup.addTrafficLight`, and
 `Lane.addAllowedOutgoingLane` so validation and safety rules remain enforced.
+
+
+## Lane turn restrictions
+
+Inbound `Lane` instances own the set of outbound lanes they may turn into. Use
+`Lane.addAllowedOutgoingLane` for incremental configuration or
+`Lane.setAllowedOutgoingLanes` to replace an inbound lane's complete restriction
+set. The getter returns a read-only view, and duplicate outbound lanes are ignored
+so each permitted turn appears only once. Before routing traffic, call
+`Lane.validateOutgoingLaneAllowed` to reject illegal turns with a clear
+`IllegalStateException`.
+
+`Road` provides road-level helpers for configuring and enforcing the same
+restrictions while ensuring the inbound lane and outbound lane both belong to
+that road. Use `Road.addAllowedTurn`, `Road.setAllowedTurns`,
+`Road.getAllowedTurns`, `Road.isTurnAllowed`, and `Road.validateTurnAllowed` to
+manage inbound-to-outbound movement rules across road lanes.
 
 ## Traffic-light safety rules
 

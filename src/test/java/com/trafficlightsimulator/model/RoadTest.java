@@ -219,4 +219,103 @@ class RoadTest {
 
         assertSame(second, road.getPedestrianCrossing());
     }
+
+
+    @Test
+    void addAllowedTurnByLane_configuresInboundToOutboundRestriction() {
+        Road road = new Road(0.0, 2, 2);
+        Lane inbound = road.getIncomingLanes().get(0);
+        Lane outbound = road.getOutgoingLanes().get(1);
+
+        road.addAllowedTurn(inbound, outbound);
+
+        assertTrue(road.isTurnAllowed(inbound, outbound));
+        assertSame(outbound, road.getAllowedTurns(inbound).get(0));
+    }
+
+    @Test
+    void addAllowedTurnByIndex_configuresInboundToSameRoadOutboundRestriction() {
+        Road road = new Road(0.0, 2, 2);
+
+        road.addAllowedTurn(1, 0);
+
+        assertTrue(road.isTurnAllowed(road.getIncomingLanes().get(1), road.getOutgoingLanes().get(0)));
+    }
+
+    @Test
+    void setAllowedTurns_replacesPermittedOutboundLanesForInboundLane() {
+        Road road = new Road(0.0, 1, 2);
+        Lane inbound = road.getIncomingLanes().get(0);
+        Lane removedOutbound = road.getOutgoingLanes().get(0);
+        Lane allowedOutbound = road.getOutgoingLanes().get(1);
+        road.addAllowedTurn(inbound, removedOutbound);
+
+        road.setAllowedTurns(inbound, List.of(allowedOutbound));
+
+        assertFalse(road.isTurnAllowed(inbound, removedOutbound));
+        assertTrue(road.isTurnAllowed(inbound, allowedOutbound));
+    }
+
+    @Test
+    void validateTurnAllowed_allowsPermittedTurn() {
+        Road road = new Road(0.0, 1, 1);
+        Lane inbound = road.getIncomingLanes().get(0);
+        Lane outbound = road.getOutgoingLanes().get(0);
+        road.addAllowedTurn(inbound, outbound);
+
+        assertDoesNotThrow(() -> road.validateTurnAllowed(inbound, outbound));
+    }
+
+    @Test
+    void validateTurnAllowed_preventsIllegalTurnWithClearFeedback() {
+        Road road = new Road(0.0, 1, 2);
+        Lane inbound = road.getIncomingLanes().get(0);
+        Lane outbound = road.getOutgoingLanes().get(1);
+
+        IllegalStateException exception = assertThrows(IllegalStateException.class,
+                () -> road.validateTurnAllowed(inbound, outbound));
+
+        assertTrue(exception.getMessage().contains("Illegal turn"));
+    }
+
+    @Test
+    void addAllowedTurn_rejectsInboundLaneFromAnotherRoad() {
+        Road road = new Road(0.0, 1, 1);
+        Road otherRoad = new Road(90.0, 1, 1);
+        Lane foreignInboundLane = otherRoad.getIncomingLanes().get(0);
+        Lane ownedOutboundLane = road.getOutgoingLanes().get(0);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> road.addAllowedTurn(foreignInboundLane, ownedOutboundLane));
+    }
+
+    @Test
+    void addAllowedTurn_rejectsOutboundLaneFromAnotherRoad() {
+        Road road = new Road(0.0, 1, 1);
+        Road otherRoad = new Road(90.0, 1, 1);
+        Lane ownedInboundLane = road.getIncomingLanes().get(0);
+        Lane foreignOutboundLane = otherRoad.getOutgoingLanes().get(0);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> road.addAllowedTurn(ownedInboundLane, foreignOutboundLane));
+    }
+
+    @Test
+    void addAllowedTurn_rejectsNonOutboundTarget() {
+        Road road = new Road(0.0, 2, 1);
+        Lane ownedInboundLane = road.getIncomingLanes().get(0);
+        Lane nonOutboundLane = road.getIncomingLanes().get(1);
+
+        assertThrows(IllegalArgumentException.class,
+                () -> road.addAllowedTurn(ownedInboundLane, nonOutboundLane));
+    }
+
+    @Test
+    void addAllowedTurnByIndex_rejectsOutOfRangeIndexes() {
+        Road road = new Road(0.0, 1, 1);
+
+        assertThrows(IndexOutOfBoundsException.class, () -> road.addAllowedTurn(-1, 0));
+        assertThrows(IndexOutOfBoundsException.class, () -> road.addAllowedTurn(0, 1));
+    }
+
 }
