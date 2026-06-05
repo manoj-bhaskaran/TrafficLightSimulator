@@ -14,8 +14,8 @@ the current `0.x` baseline.
 
 ### Added
 
-- Dedicated CodeQL and dependency-review GitHub Actions workflows for pull-request
-  security coverage.
+- Dedicated dependency-review GitHub Actions workflow for pull-request
+  dependency-change security coverage.
 - Fork-safe CI jar artifact upload of `target/*.jar` as
   `traffic-light-simulator-jar`.
 
@@ -93,6 +93,8 @@ the current `0.x` baseline.
 
 - Renamed the former SonarCloud-only workflow to `ci.yml` and split it into a
   fork-safe Maven build/test job plus a separately guarded SonarQube Cloud job.
+- Deferred custom CodeQL workflow configuration to GitHub code scanning default
+  setup so SARIF processing does not fail when default setup is enabled.
 - Incremented the pre-MVP development version from `0.11.0-SNAPSHOT` to
   `0.12.0-SNAPSHOT` for the CI/CD pipeline hardening.
 

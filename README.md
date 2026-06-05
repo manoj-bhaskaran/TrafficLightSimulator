@@ -172,7 +172,7 @@ resolution portable across Linux, macOS, and Windows.
 
 ## CI/CD workflows
 
-GitHub Actions runs three dedicated workflows for repository automation:
+Repository automation uses CI workflows plus GitHub code scanning default setup:
 
 - **CI** (`.github/workflows/ci.yml`) runs `mvn -B verify` on pushes to
   `main` and on pull requests, including forked pull requests. The build/test job
@@ -182,10 +182,12 @@ GitHub Actions runs three dedicated workflows for repository automation:
   fork-safe build/test job, skips fork pull requests, and only runs when
   `SONAR_TOKEN` is available. This keeps external contributor pull requests from
   failing because repository secrets are unavailable.
-- **CodeQL** (`.github/workflows/codeql.yml`) analyzes Java sources on pushes
-  and pull requests, and **Dependency Review**
-  (`.github/workflows/dependency-review.yml`) checks pull-request dependency
-  changes before they merge.
+- **CodeQL** is provided by GitHub code scanning default setup for this
+  repository. A custom advanced CodeQL workflow is intentionally not committed,
+  because GitHub rejects advanced-configuration SARIF uploads while default setup
+  is enabled.
+- **Dependency Review** (`.github/workflows/dependency-review.yml`) checks
+  pull-request dependency changes before they merge.
 
 ## Static analysis
 
