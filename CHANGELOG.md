@@ -20,6 +20,12 @@ the current `0.x` baseline.
   safety, pedestrian crossings, and safe simulation start-up).
 - README link to the new functional overview document.
 
+### Fixed
+
+- Clarified in the functional overview that pedestrian crossing requests are not
+  cleared automatically; buttons must be explicitly reset via `resetButtons()`
+  once a request has been served.
+
 ### Changed
 
 - Bumped the pre-MVP development version from `0.16.0-SNAPSHOT` to

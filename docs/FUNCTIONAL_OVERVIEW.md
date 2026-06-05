@@ -178,8 +178,11 @@ unsafe or invalid layout.
   crossing cannot be "stolen" by another crossing, which keeps each crossing's
   wiring intact.
 - **R29 — Pressing requests a crossing.** A crossing is considered *requested*
-  when at least one of its buttons has been pressed and not yet reset. Buttons
-  are reset after the crossing has been served.
+  when at least one of its buttons has been pressed and not yet reset. The
+  request is **not** cleared automatically: activating or deactivating the
+  crossing leaves the request standing. A caller must explicitly reset the
+  buttons (via the crossing's `resetButtons()` operation) once the request has
+  been served.
 - **R30 — Activate / deactivate the right of way.** Activating a crossing sets
   all its pedestrian lights to Green + On (walk); deactivating sets them to
   Red + On (don't walk).
