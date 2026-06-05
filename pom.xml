@@ -10,7 +10,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>17</maven.compiler.release> <!-- Using Java 17 as it is LTS and compatible -->
         <exec.mainClass>com.trafficlightsimulator.app.TrafficLightSimulator</exec.mainClass>
-        <maven.resources.plugin.version>3.3.1</maven.resources.plugin.version>
+        <maven.resources.plugin.version>3.5.0</maven.resources.plugin.version>
         <junit.jupiter.version>5.11.0</junit.jupiter.version>
         <maven.surefire.plugin.version>3.3.1</maven.surefire.plugin.version>
         <jacoco.maven.plugin.version>0.8.12</jacoco.maven.plugin.version>
