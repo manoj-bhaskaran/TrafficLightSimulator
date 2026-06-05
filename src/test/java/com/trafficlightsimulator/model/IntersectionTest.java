@@ -116,4 +116,18 @@ class IntersectionTest {
     private TrafficLight trafficLight(Direction direction, Color color, State state) {
         return new TrafficLight(color, state, TrafficLight.Type.TRAFFIC, direction, true);
     }
+
+    @Test
+    void equality_usesIdentityAndToStringIsReadable() {
+        Intersection intersection = new Intersection(2);
+        Intersection sameValueIntersection = new Intersection(2);
+
+        assertEquals(intersection, intersection);
+        assertNotEquals(intersection, sameValueIntersection);
+        assertEquals(System.identityHashCode(intersection), intersection.hashCode());
+        assertTrue(intersection.toString().contains("configuredRoadCapacity=2"));
+        assertTrue(intersection.toString().contains("roadCount=0"));
+        assertFalse(intersection.toString().contains("@"));
+    }
+
 }

@@ -74,7 +74,7 @@ public class Road {
             throw new IllegalArgumentException("Angle must be between 0 and 360 degrees.");
         }
         this.angle = angle;
-        logger.log(Level.INFO, "Angle for road set to: {0} degrees", angle);
+        logger.log(Level.FINE, "Angle for road set to: {0} degrees", angle);
     }
 
     /**
@@ -108,7 +108,7 @@ public class Road {
             this.incomingLanes.subList(numIncomingLanes, current).clear();
         }
         this.numIncomingLanes = numIncomingLanes;
-        logger.log(Level.INFO, "Number of incoming lanes set to: {0}", numIncomingLanes);
+        logger.log(Level.FINE, "Number of incoming lanes set to: {0}", numIncomingLanes);
     }
 
     /**
@@ -141,7 +141,7 @@ public class Road {
             this.outgoingLanes.subList(numOutgoingLanes, current).clear();
         }
         this.numOutgoingLanes = numOutgoingLanes;
-        logger.log(Level.INFO, "Number of outgoing lanes set to: {0}", numOutgoingLanes);
+        logger.log(Level.FINE, "Number of outgoing lanes set to: {0}", numOutgoingLanes);
     }
 
     /**
@@ -186,7 +186,7 @@ public class Road {
      */
     public void setPedestrianCrossing(PedestrianCrossing pedestrianCrossing) {
         this.pedestrianCrossing = pedestrianCrossing;
-        logger.log(Level.INFO, "Pedestrian crossing set for the road: {0}", pedestrianCrossing);
+        logger.log(Level.FINE, "Pedestrian crossing set for the road: {0}", pedestrianCrossing);
     }
 
     /**
@@ -204,7 +204,7 @@ public class Road {
             throw new IllegalStateException("A pedestrian crossing is already associated with this road.");
         }
         this.pedestrianCrossing = pedestrianCrossing;
-        logger.log(Level.INFO, "Pedestrian crossing added to road: {0}", pedestrianCrossing);
+        logger.log(Level.FINE, "Pedestrian crossing added to road: {0}", pedestrianCrossing);
     }
 
     /**
@@ -216,7 +216,7 @@ public class Road {
         if (this.pedestrianCrossing == null) {
             throw new IllegalStateException("No pedestrian crossing is associated with this road.");
         }
-        logger.log(Level.INFO, "Pedestrian crossing removed from road: {0}", this.pedestrianCrossing);
+        logger.log(Level.FINE, "Pedestrian crossing removed from road: {0}", this.pedestrianCrossing);
         this.pedestrianCrossing = null;
     }
 
@@ -253,7 +253,7 @@ public class Road {
         validateInboundLaneMembership(inboundLane);
         validateOutboundLane(outboundLane);
         inboundLane.addAllowedOutgoingLane(outboundLane);
-        logger.log(Level.INFO, "Allowed turn configured from inbound lane {0} to outbound lane {1}",
+        logger.log(Level.FINE, "Allowed turn configured from inbound lane {0} to outbound lane {1}",
                 new Object[] { inboundLane, outboundLane });
     }
 
@@ -276,7 +276,7 @@ public class Road {
             validateOutboundLane(outboundLane);
         }
         inboundLane.setAllowedOutgoingLanes(outboundLanes);
-        logger.log(Level.INFO, "Allowed turns replaced for inbound lane {0}", inboundLane);
+        logger.log(Level.FINE, "Allowed turns replaced for inbound lane {0}", inboundLane);
     }
 
     /**
@@ -367,20 +367,15 @@ public class Road {
      * purposes.
      */
     public void displayLaneInfo() {
-        logger.log(Level.INFO, "Incoming Lanes: {0}", incomingLanes.size());
+        logger.log(Level.FINE, "{0}", this);
         for (Lane lane : incomingLanes) {
-            logger.log(Level.INFO, "Incoming Lane: {0}", lane.getDirection());
+            logger.log(Level.FINE, "Incoming lane: {0}", lane);
         }
-
-        logger.log(Level.INFO, "Outgoing Lanes: {0}", outgoingLanes.size());
         for (Lane lane : outgoingLanes) {
-            logger.log(Level.INFO, "Outgoing Lane: {0}", lane.getDirection());
+            logger.log(Level.FINE, "Outgoing lane: {0}", lane);
         }
-
         if (hasPedestrianCrossing()) {
-            logger.log(Level.INFO, "Pedestrian Crossing is present on this road.");
-        } else {
-            logger.log(Level.INFO, "No Pedestrian Crossing on this road.");
+            logger.log(Level.FINE, "Pedestrian crossing: {0}", pedestrianCrossing);
         }
     }
 
@@ -421,4 +416,43 @@ public class Road {
             throw new IllegalArgumentException("Outbound lane must belong to this road.");
         }
     }
+
+    /**
+     * Returns a compact diagnostic representation of this road.
+     *
+     * @return readable road summary
+     */
+    @Override
+    public String toString() {
+        return "Road{"
+                + "angle=" + angle
+                + ", incomingLaneCount=" + incomingLanes.size()
+                + ", outgoingLaneCount=" + outgoingLanes.size()
+                + ", hasPedestrianCrossing=" + hasPedestrianCrossing()
+                + ", trafficLightCount=" + incomingLanesTrafficLightGroup.getLights().size()
+                + '}';
+    }
+
+    /**
+     * Roads model physical road approaches, so equality is intentionally based
+     * on object identity rather than matching angle or lane counts.
+     *
+     * @param obj object to compare
+     * @return {@code true} only when both references point to the same road
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    /**
+     * Returns an identity-based hash code consistent with {@link #equals(Object)}.
+     *
+     * @return identity hash code
+     */
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
 }

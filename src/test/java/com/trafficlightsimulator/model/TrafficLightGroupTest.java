@@ -225,4 +225,19 @@ class TrafficLightGroupTest {
     private TrafficLight pedestrianLight(Color color, State state) {
         return new TrafficLight(color, state, TrafficLight.Type.PEDESTRIAN, Direction.NONE, false);
     }
+
+    @Test
+    void equality_usesIdentityAndToStringIsReadable() {
+        TrafficLightGroup group = new TrafficLightGroup();
+        group.addTrafficLight(trafficLight(Direction.STRAIGHT, Color.RED, State.ON));
+        TrafficLightGroup sameShapeGroup = new TrafficLightGroup();
+        sameShapeGroup.addTrafficLight(trafficLight(Direction.STRAIGHT, Color.RED, State.ON));
+
+        assertEquals(group, group);
+        assertNotEquals(group, sameShapeGroup);
+        assertEquals(System.identityHashCode(group), group.hashCode());
+        assertTrue(group.toString().contains("lightCount=1"));
+        assertFalse(group.toString().contains("@"));
+    }
+
 }

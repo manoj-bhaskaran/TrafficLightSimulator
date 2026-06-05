@@ -318,4 +318,18 @@ class RoadTest {
         assertThrows(IndexOutOfBoundsException.class, () -> road.addAllowedTurn(0, 1));
     }
 
+
+    @Test
+    void equality_usesIdentityAndToStringIsReadable() {
+        Road road = new Road(90.0, 1, 2);
+        Road sameValueRoad = new Road(90.0, 1, 2);
+
+        assertEquals(road, road);
+        assertNotEquals(road, sameValueRoad);
+        assertEquals(System.identityHashCode(road), road.hashCode());
+        assertTrue(road.toString().contains("angle=90.0"));
+        assertTrue(road.toString().contains("incomingLaneCount=1"));
+        assertFalse(road.toString().contains("@"));
+    }
+
 }

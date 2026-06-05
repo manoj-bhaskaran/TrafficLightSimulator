@@ -40,4 +40,18 @@ class PedestrianButtonTest {
 
         assertFalse(button.isPressed());
     }
+
+    @Test
+    void equality_usesIdentityAndToStringIsReadable() {
+        PedestrianButton button = new PedestrianButton(new TrafficLightGroup());
+        PedestrianButton sameValueButton = new PedestrianButton(new TrafficLightGroup());
+        button.press();
+
+        assertEquals(button, button);
+        assertNotEquals(button, sameValueButton);
+        assertEquals(System.identityHashCode(button), button.hashCode());
+        assertTrue(button.toString().contains("pressed=true"));
+        assertFalse(button.toString().contains("@"));
+    }
+
 }

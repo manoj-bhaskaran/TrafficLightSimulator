@@ -14,6 +14,15 @@ the current `0.x` baseline.
 
 ### Added
 
+- Readable `toString()` implementations plus explicit identity-based `equals()`
+  and `hashCode()` methods on core model entities (`Intersection`, `Road`,
+  `Lane`, `TrafficLight`, `TrafficLightGroup`, `PedestrianCrossing`, and
+  `PedestrianButton`).
+- Unit coverage for model entity identity semantics and readable diagnostic
+  string output.
+
+### Added
+
 - Javadoc on all public classes and methods across `model`, `engine`, `config`,
   and `app` packages, covering intent, invariants, parameters, return values,
   and exceptions thrown.
@@ -106,6 +115,11 @@ the current `0.x` baseline.
   with `IllegalArgumentException`.
 
 ### Changed
+
+- Bumped the pre-MVP development version from `0.12.0-SNAPSHOT` to
+  `0.13.0-SNAPSHOT` for the model diagnostics and equality-semantics update.
+- Reduced routine model and initialization logging from `INFO` to `FINE` while
+  keeping warning paths at `WARNING`, so normal runs no longer flood info logs.
 
 - Renamed the former SonarCloud-only workflow to `ci.yml` and split it into a
   fork-safe Maven build/test job plus a separately guarded SonarQube Cloud job.

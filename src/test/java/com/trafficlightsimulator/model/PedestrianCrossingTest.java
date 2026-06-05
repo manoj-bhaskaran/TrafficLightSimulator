@@ -195,4 +195,17 @@ class PedestrianCrossingTest {
         crossing.deactivate();
         assertFalse(crossing.isActive());
     }
+
+    @Test
+    void equality_usesIdentityAndToStringIsReadable() {
+        PedestrianCrossing crossing = new PedestrianCrossing();
+        PedestrianCrossing sameValueCrossing = new PedestrianCrossing();
+
+        assertEquals(crossing, crossing);
+        assertNotEquals(crossing, sameValueCrossing);
+        assertEquals(System.identityHashCode(crossing), crossing.hashCode());
+        assertTrue(crossing.toString().contains("controlType=AUTOMATED"));
+        assertFalse(crossing.toString().contains("@"));
+    }
+
 }

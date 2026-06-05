@@ -140,4 +140,18 @@ class TrafficLightTest {
     private TrafficLight trafficLight(TrafficLight.Type type, boolean multiColor) {
         return new TrafficLight(Color.RED, State.ON, type, Direction.NONE, multiColor);
     }
+
+    @Test
+    void equality_usesIdentityAndToStringIsReadable() {
+        TrafficLight light = trafficLight(TrafficLight.Type.TRAFFIC, true);
+        TrafficLight sameValueLight = trafficLight(TrafficLight.Type.TRAFFIC, true);
+
+        assertEquals(light, light);
+        assertNotEquals(light, sameValueLight);
+        assertEquals(System.identityHashCode(light), light.hashCode());
+        assertTrue(light.toString().contains("type=TRAFFIC"));
+        assertTrue(light.toString().contains("color=RED"));
+        assertFalse(light.toString().contains("@"));
+    }
+
 }

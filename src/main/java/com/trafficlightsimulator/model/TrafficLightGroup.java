@@ -49,7 +49,7 @@ public class TrafficLightGroup {
         if (light != null) {
             lights.add(light);
             incompatibleLights.computeIfAbsent(light, ignored -> newIdentitySet());
-            logger.log(Level.INFO, "Traffic light added: {0}", light);
+            logger.log(Level.FINE, "Traffic light added: {0}", light);
         }
     }
 
@@ -65,7 +65,7 @@ public class TrafficLightGroup {
         for (Set<TrafficLight> incompatibleSet : incompatibleLights.values()) {
             incompatibleSet.remove(light);
         }
-        logger.log(Level.INFO, "Traffic light removed: {0}", light);
+        logger.log(Level.FINE, "Traffic light removed: {0}", light);
     }
 
     /**
@@ -86,7 +86,7 @@ public class TrafficLightGroup {
         validateIncompatibilityPair(firstLight, secondLight);
         incompatibleLights.computeIfAbsent(firstLight, ignored -> newIdentitySet()).add(secondLight);
         incompatibleLights.computeIfAbsent(secondLight, ignored -> newIdentitySet()).add(firstLight);
-        logger.log(Level.INFO, "Configured incompatible lights: {0} <-> {1}",
+        logger.log(Level.FINE, "Configured incompatible lights: {0} <-> {1}",
                 new Object[]{firstLight, secondLight});
     }
 
@@ -103,7 +103,7 @@ public class TrafficLightGroup {
         }
         removeIncompatibility(firstLight, secondLight);
         removeIncompatibility(secondLight, firstLight);
-        logger.log(Level.INFO, "Removed incompatible lights: {0} <-> {1}",
+        logger.log(Level.FINE, "Removed incompatible lights: {0} <-> {1}",
                 new Object[]{firstLight, secondLight});
     }
 
@@ -155,7 +155,7 @@ public class TrafficLightGroup {
         validateManagedLight(light);
         ensureCompatibleActivation(light, color, light.getState());
         light.setColor(color);
-        logger.log(Level.INFO, "Set color {0} for light: {1}", new Object[]{color, light});
+        logger.log(Level.FINE, "Set color {0} for light: {1}", new Object[]{color, light});
     }
 
     /**
@@ -176,7 +176,7 @@ public class TrafficLightGroup {
         validateManagedLight(light);
         ensureCompatibleActivation(light, light.getColor(), state);
         light.setState(state);
-        logger.log(Level.INFO, "Set state {0} for light: {1}", new Object[]{state, light});
+        logger.log(Level.FINE, "Set state {0} for light: {1}", new Object[]{state, light});
     }
 
     /**
@@ -227,9 +227,9 @@ public class TrafficLightGroup {
      * diagnostic purposes.
      */
     public void displayGroupStatus() {
+        logger.log(Level.FINE, "{0}", this);
         for (TrafficLight light : lights) {
-            logger.log(Level.INFO, "Light Type: {0}, Color: {1}, State: {2}",
-                       new Object[]{light.getType(), light.getColor(), light.getState()});
+            logger.log(Level.FINE, "Traffic light: {0}", light);
         }
     }
 
@@ -288,4 +288,43 @@ public class TrafficLightGroup {
             incompatibleSet.remove(secondLight);
         }
     }
+
+    /**
+     * Returns a compact diagnostic representation of this group.
+     *
+     * @return readable traffic-light-group summary
+     */
+    @Override
+    public String toString() {
+        int incompatibilityCount = incompatibleLights.values().stream()
+                .mapToInt(Set::size)
+                .sum() / 2;
+        return "TrafficLightGroup{"
+                + "lightCount=" + lights.size()
+                + ", incompatibilityCount=" + incompatibilityCount
+                + '}';
+    }
+
+    /**
+     * Traffic-light groups model physical controller group instances, so
+     * equality is intentionally based on object identity.
+     *
+     * @param obj object to compare
+     * @return {@code true} only when both references point to the same group
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    /**
+     * Returns an identity-based hash code consistent with {@link #equals(Object)}.
+     *
+     * @return identity hash code
+     */
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
 }

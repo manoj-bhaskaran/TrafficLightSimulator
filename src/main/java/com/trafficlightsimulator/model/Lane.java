@@ -57,7 +57,7 @@ public class Lane {
         validateAllowedOutgoingLane(lane);
         if (!allowedOutgoingLanes.contains(lane)) {
             allowedOutgoingLanes.add(lane);
-            logger.log(Level.INFO, "Added allowed outgoing lane: {0}", lane);
+            logger.log(Level.FINE, "Added allowed outgoing lane: {0}", lane);
         }
     }
 
@@ -145,11 +145,10 @@ public class Lane {
      * diagnostic purposes.
      */
     public void displayLaneInfo() {
-        logger.log(Level.INFO, "Lane Direction: {0}", direction);
+        logger.log(Level.FINE, "{0}", this);
         if (direction == Direction.INCOMING) {
-            logger.log(Level.INFO, "Allowed Outgoing Lanes: {0}", allowedOutgoingLanes.size());
             for (Lane outgoingLane : allowedOutgoingLanes) {
-                logger.log(Level.INFO, "Allowed Outgoing Lane: {0}", outgoingLane.getDirection());
+                logger.log(Level.FINE, "Allowed outgoing lane: {0}", outgoingLane);
             }
         }
     }
@@ -162,4 +161,40 @@ public class Lane {
             throw new IllegalArgumentException("Only incoming lanes can have allowed outgoing lanes, and only outgoing lanes can be added.");
         }
     }
+
+    /**
+     * Returns a compact diagnostic representation of this lane.
+     *
+     * @return readable lane summary
+     */
+    @Override
+    public String toString() {
+        return "Lane{"
+                + "direction=" + direction
+                + ", allowedOutgoingLaneCount=" + allowedOutgoingLanes.size()
+                + '}';
+    }
+
+    /**
+     * Lanes model physical lane instances, so equality is intentionally based
+     * on object identity rather than direction or configured turns.
+     *
+     * @param obj object to compare
+     * @return {@code true} only when both references point to the same lane
+     */
+    @Override
+    public boolean equals(Object obj) {
+        return this == obj;
+    }
+
+    /**
+     * Returns an identity-based hash code consistent with {@link #equals(Object)}.
+     *
+     * @return identity hash code
+     */
+    @Override
+    public int hashCode() {
+        return System.identityHashCode(this);
+    }
+
 }
