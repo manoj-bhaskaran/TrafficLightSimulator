@@ -15,7 +15,7 @@ until a stable `1.0.0` release is declared.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.13.0-SNAPSHOT`
+- **Current development version:** `0.14.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Architecture overview
@@ -99,7 +99,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.13.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.14.0-SNAPSHOT.jar
 ```
 
 ## Generating API documentation
@@ -149,6 +149,14 @@ such as `Intersection.addRoad`, `Road.setNumIncomingLanes`,
 `Road.setNumOutgoingLanes`, `TrafficLightGroup.addTrafficLight`, and
 `Lane.addAllowedOutgoingLane` so validation and safety rules remain enforced.
 
+## Intersection road-angle validation
+
+`Intersection.addRoad` enforces a minimum angular separation between every pair
+of roads connected to the same intersection. A candidate road must be at least
+`Intersection.MIN_ANGLE_BETWEEN_ROADS` degrees from each existing road, using the
+shortest circular difference so roads near the `0`/`360` degree boundary are
+validated correctly. Roads that violate the spacing rule are rejected with an
+`IllegalArgumentException` and are not added to the intersection.
 
 ## Lane turn restrictions
 

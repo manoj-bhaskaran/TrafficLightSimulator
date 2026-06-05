@@ -14,6 +14,19 @@ the current `0.x` baseline.
 
 ### Added
 
+- `Intersection.MIN_ANGLE_BETWEEN_ROADS` and centralized intersection angle
+  spacing validation that rejects roads configured too close to existing roads,
+  including wraparound checks across the `0`/`360` degree boundary.
+- Unit coverage for accepted boundary spacing and rejected too-close road angles.
+- README documentation for intersection road-angle validation.
+
+### Changed
+
+- Bumped the pre-MVP development version from `0.13.0-SNAPSHOT` to
+  `0.14.0-SNAPSHOT` for intersection road-angle validation.
+
+### Added
+
 - Readable `toString()` implementations plus explicit identity-based `equals()`
   and `hashCode()` methods on core model entities (`Intersection`, `Road`,
   `Lane`, `TrafficLight`, `TrafficLightGroup`, `PedestrianCrossing`, and

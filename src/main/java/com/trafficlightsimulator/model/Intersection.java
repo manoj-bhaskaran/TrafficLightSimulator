@@ -12,9 +12,11 @@ import java.util.logging.Logger;
  * A road intersection that connects two to eight {@link Road} instances.
  *
  * <p>The intersection enforces a declared capacity: callers first set the
- * expected road count and then add roads one by one. Once the intersection
- * reaches capacity, {@link #isIntersectionSetupComplete()} returns
- * {@code true} and no additional roads can be added.
+ * expected road count and then add roads one by one. Each added road must be
+ * at least {@link #MIN_ANGLE_BETWEEN_ROADS} degrees away from every existing
+ * road, measured by the shortest circular angle between their headings. Once
+ * the intersection reaches capacity, {@link #isIntersectionSetupComplete()}
+ * returns {@code true} and no additional roads can be added.
  *
  * <p>Safety invariants for incompatible traffic lights are registered at the
  * intersection level through
@@ -24,6 +26,12 @@ import java.util.logging.Logger;
  */
 public class Intersection {
     private static final Logger logger = Logger.getLogger(Intersection.class.getName());
+
+    /**
+     * Minimum allowed angular separation, in degrees, between any two roads
+     * connected to this intersection.
+     */
+    public static final double MIN_ANGLE_BETWEEN_ROADS = IntersectionLimits.MIN_ANGLE_BETWEEN_ROADS;
 
     private int numberOfRoads;
     private final List<Road> roads;
@@ -70,7 +78,9 @@ public class Intersection {
      * Adds a road to this intersection.
      *
      * @param road road to add; must not be null
-     * @throws IllegalArgumentException if {@code road} is null
+     * @throws IllegalArgumentException if {@code road} is null or is closer
+     *                                  than {@link #MIN_ANGLE_BETWEEN_ROADS}
+     *                                  degrees to an existing road
      * @throws IllegalStateException    if the intersection already contains the
      *                                  declared number of roads
      */
@@ -81,6 +91,7 @@ public class Intersection {
         if (roads.size() >= numberOfRoads) {
             throw new IllegalStateException("Cannot add more roads than the specified number: " + numberOfRoads);
         }
+        validateMinimumAngleBetweenRoads(road);
         roads.add(road);
         logger.log(Level.FINE, "Added road to intersection. Total roads now: {0}", roads.size());
     }
@@ -238,6 +249,24 @@ public class Intersection {
                 road.getPedestrianCrossing().displayCrossingStatus();
             }
         }
+    }
+
+    private void validateMinimumAngleBetweenRoads(Road candidateRoad) {
+        for (Road existingRoad : roads) {
+            double angleDifference = calculateShortestAngleDifference(candidateRoad.getAngle(),
+                    existingRoad.getAngle());
+            if (angleDifference < MIN_ANGLE_BETWEEN_ROADS) {
+                throw new IllegalArgumentException("Road angle must be at least " + MIN_ANGLE_BETWEEN_ROADS
+                        + " degrees from every existing road. Candidate angle " + candidateRoad.getAngle()
+                        + " is " + angleDifference + " degrees from existing road angle "
+                        + existingRoad.getAngle() + ".");
+            }
+        }
+    }
+
+    private double calculateShortestAngleDifference(double firstAngle, double secondAngle) {
+        double absoluteDifference = Math.abs(firstAngle - secondAngle);
+        return Math.min(absoluteDifference, 360.0 - absoluteDifference);
     }
 
     private TrafficLightGroup findTrafficLightGroup(TrafficLight light) {
