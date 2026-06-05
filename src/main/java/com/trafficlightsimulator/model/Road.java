@@ -34,6 +34,7 @@ public class Road {
     private final List<Lane> outgoingLanes;
     private PedestrianCrossing pedestrianCrossing;
     private TrafficLightGroup incomingLanesTrafficLightGroup;
+    private Intersection intersection;
     private double angle;
     private int numIncomingLanes;
     private int numOutgoingLanes;
@@ -56,6 +57,7 @@ public class Road {
         this.outgoingLanes = new ArrayList<>();
         this.pedestrianCrossing = null;
         this.incomingLanesTrafficLightGroup = new TrafficLightGroup();
+        this.intersection = null;
         setAngle(angle);
         setNumIncomingLanes(numIncomingLanes);
         setNumOutgoingLanes(numOutgoingLanes);
@@ -67,11 +69,14 @@ public class Road {
      * @param angle angle in degrees; must be in
      *              [{@link RoadLimits#MIN_ANGLE_DEGREES},
      *              {@link RoadLimits#MAX_ANGLE_DEGREES_EXCLUSIVE})
-     * @throws IllegalArgumentException if the angle is out of range
+     * @throws IllegalArgumentException if the angle is out of range or would
+     *                                  violate the minimum road-angle spacing
+     *                                  required by the owning intersection
      */
     public void setAngle(double angle) {
-        if (angle < RoadLimits.MIN_ANGLE_DEGREES || angle >= RoadLimits.MAX_ANGLE_DEGREES_EXCLUSIVE) {
-            throw new IllegalArgumentException("Angle must be between 0 and 360 degrees.");
+        validateAngleRange(angle);
+        if (intersection != null) {
+            intersection.validateRoadAngleChange(this, angle);
         }
         this.angle = angle;
         logger.log(Level.FINE, "Angle for road set to: {0} degrees", angle);
@@ -376,6 +381,23 @@ public class Road {
         }
         if (hasPedestrianCrossing()) {
             logger.log(Level.FINE, "Pedestrian crossing: {0}", pedestrianCrossing);
+        }
+    }
+
+    boolean isConnectedToDifferentIntersection(Intersection intersection) {
+        return this.intersection != null && this.intersection != intersection;
+    }
+
+    void attachToIntersection(Intersection intersection) {
+        if (isConnectedToDifferentIntersection(intersection)) {
+            throw new IllegalStateException("Road already belongs to another intersection.");
+        }
+        this.intersection = intersection;
+    }
+
+    private void validateAngleRange(double angle) {
+        if (angle < RoadLimits.MIN_ANGLE_DEGREES || angle >= RoadLimits.MAX_ANGLE_DEGREES_EXCLUSIVE) {
+            throw new IllegalArgumentException("Angle must be between 0 and 360 degrees.");
         }
     }
 

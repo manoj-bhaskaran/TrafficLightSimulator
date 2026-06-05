@@ -54,6 +54,99 @@ class IntersectionTest {
     }
 
     @Test
+    void addRoad_rejectsRoadAlreadyConnectedToIntersection() {
+        Intersection intersection = new Intersection(3);
+        Road road = new Road(0.0, 1, 1);
+        intersection.addRoad(road);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> intersection.addRoad(road));
+
+        assertTrue(exception.getMessage().contains("already connected"));
+        assertEquals(1, intersection.getRoads().size());
+    }
+
+    @Test
+    void addRoad_acceptsRoadAtMinimumAngleFromExistingRoad() {
+        Intersection intersection = new Intersection(2);
+        intersection.addRoad(new Road(0.0, 1, 1));
+        Road roadAtMinimumAngle = new Road(Intersection.MIN_ANGLE_BETWEEN_ROADS, 1, 1);
+
+        assertDoesNotThrow(() -> intersection.addRoad(roadAtMinimumAngle));
+
+        assertEquals(2, intersection.getRoads().size());
+        assertSame(roadAtMinimumAngle, intersection.getRoads().get(1));
+    }
+
+    @Test
+    void addRoad_rejectsRoadBelowMinimumAngleFromExistingRoad() {
+        Intersection intersection = new Intersection(2);
+        Road existingRoad = new Road(90.0, 1, 1);
+        intersection.addRoad(existingRoad);
+        Road tooCloseRoad = new Road(90.0 + Intersection.MIN_ANGLE_BETWEEN_ROADS - 0.5, 1, 1);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> intersection.addRoad(tooCloseRoad));
+
+        assertTrue(exception.getMessage().contains("at least " + Intersection.MIN_ANGLE_BETWEEN_ROADS));
+        assertEquals(1, intersection.getRoads().size());
+        assertSame(existingRoad, intersection.getRoads().get(0));
+    }
+
+    @Test
+    void addRoad_rejectsRoadBelowMinimumAngleAcrossZeroDegreeBoundary() {
+        Intersection intersection = new Intersection(2);
+        intersection.addRoad(new Road(350.0, 1, 1));
+        Road tooCloseRoad = new Road(5.0, 1, 1);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> intersection.addRoad(tooCloseRoad));
+
+        assertTrue(exception.getMessage().contains("350.0"));
+        assertEquals(1, intersection.getRoads().size());
+    }
+
+    @Test
+    void addRoad_acceptsRoadAtMinimumAngleAcrossZeroDegreeBoundary() {
+        Intersection intersection = new Intersection(2);
+        intersection.addRoad(new Road(345.0, 1, 1));
+        Road roadAtMinimumAngle = new Road(15.0, 1, 1);
+
+        assertDoesNotThrow(() -> intersection.addRoad(roadAtMinimumAngle));
+
+        assertEquals(2, intersection.getRoads().size());
+    }
+
+    @Test
+    void roadSetAngleRejectsMutationThatWouldBreakIntersectionSpacing() {
+        Intersection intersection = new Intersection(2);
+        Road firstRoad = new Road(0.0, 1, 1);
+        Road secondRoad = new Road(90.0, 1, 1);
+        intersection.addRoad(firstRoad);
+        intersection.addRoad(secondRoad);
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
+                () -> secondRoad.setAngle(5.0));
+
+        assertTrue(exception.getMessage().contains("at least " + Intersection.MIN_ANGLE_BETWEEN_ROADS));
+        assertEquals(90.0, secondRoad.getAngle());
+        assertTrue(intersection.isIntersectionSetupComplete());
+    }
+
+    @Test
+    void roadSetAngleAcceptsMutationThatPreservesIntersectionSpacing() {
+        Intersection intersection = new Intersection(2);
+        Road firstRoad = new Road(0.0, 1, 1);
+        Road secondRoad = new Road(90.0, 1, 1);
+        intersection.addRoad(firstRoad);
+        intersection.addRoad(secondRoad);
+
+        assertDoesNotThrow(() -> secondRoad.setAngle(180.0));
+
+        assertEquals(180.0, secondRoad.getAngle());
+    }
+
+    @Test
     void getRoads_returnsUnmodifiableViewBackedByInternalRoads() {
         Intersection intersection = new Intersection(2);
         Road road = new Road(0.0, 1, 1);
