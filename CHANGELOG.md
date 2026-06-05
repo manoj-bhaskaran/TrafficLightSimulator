@@ -14,6 +14,11 @@ the current `0.x` baseline.
 
 ### Added
 
+- Dedicated CodeQL and dependency-review GitHub Actions workflows for pull-request
+  security coverage.
+- Fork-safe CI jar artifact upload of `target/*.jar` as
+  `traffic-light-simulator-jar`.
+
 - `Lane.setAllowedOutgoingLanes(Collection<Lane>)` and
   `Lane.validateOutgoingLaneAllowed(Lane)` to replace inbound-lane turn
   restrictions atomically and reject illegal outbound turns with clear feedback.
@@ -85,6 +90,11 @@ the current `0.x` baseline.
   with `IllegalArgumentException`.
 
 ### Changed
+
+- Renamed the former SonarCloud-only workflow to `ci.yml` and split it into a
+  fork-safe Maven build/test job plus a separately guarded SonarQube Cloud job.
+- Incremented the pre-MVP development version from `0.11.0-SNAPSHOT` to
+  `0.12.0-SNAPSHOT` for the CI/CD pipeline hardening.
 
 - Incremented the pre-MVP development version from `0.10.0-SNAPSHOT` to
   `0.11.0-SNAPSHOT` for inbound-to-outbound lane turn restrictions.
