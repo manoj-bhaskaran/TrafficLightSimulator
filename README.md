@@ -15,7 +15,7 @@ until a stable `1.0.0` release is declared.
 
 - **Maven group ID:** `com.trafficlightsimulator`
 - **Maven artifact ID:** `TrafficLightSimulator`
-- **Current development version:** `0.15.0-SNAPSHOT`
+- **Current development version:** `0.16.0-SNAPSHOT`
 - **Java baseline:** Java 17
 
 ## Architecture overview
@@ -99,7 +99,7 @@ Build the executable jar package, then launch it with `java -jar`:
 
 ```sh
 mvn -B package
-java -jar target/TrafficLightSimulator-0.15.0-SNAPSHOT.jar
+java -jar target/TrafficLightSimulator-0.16.0-SNAPSHOT.jar
 ```
 
 ## Generating API documentation
@@ -139,6 +139,12 @@ To resolve it:
    mvn -U -B verify
    ```
 
+## Contributing
+
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request.
+It documents the expected branch names, Commitizen-style commit messages,
+CHANGELOG and pre-MVP SemVer updates, CI/test requirements, and the recommended
+`main` branch-protection policy.
 
 ## Fluent builders and validation constants
 

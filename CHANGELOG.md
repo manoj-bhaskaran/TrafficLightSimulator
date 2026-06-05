@@ -14,6 +14,20 @@ the current `0.x` baseline.
 
 ### Added
 
+- Dependabot version-update coverage for the GitHub Actions ecosystem on a
+  weekly schedule.
+- Pull request and issue templates for bug reports and enhancement requests.
+- CONTRIBUTING guidance for branch naming, Commitizen-style commits,
+  CHANGELOG/SemVer expectations, CI checks, and the recommended `main`
+  branch-protection policy.
+
+### Changed
+
+- Bumped the pre-MVP development version from `0.15.0-SNAPSHOT` to
+  `0.16.0-SNAPSHOT` for repository governance and hygiene updates.
+
+### Added
+
 - `ValidationConstants` as the single source for road-angle, lane-count,
   intersection road-count, and minimum road-angle-spacing limits.
 - Fluent `RoadBuilder` and `IntersectionBuilder` factories that enforce shared
